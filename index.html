@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>TurkceDeck</title>
+</head>
+<body>
+    <nav>
+  <div class="app-name">TürkçeDeck</div>
+  <ul>
+    <li class="dropdown">
+        <a href="#" id="nav-flashcards">Flash Cards</a>
+     <ul class="dropdown-menu">
+        <li><a id="btn-numbers" href="#" >Numbers</a></li>
+        <li><a  id="btn-nouns" href="#">Nouns</a></li>
+        <li><a id="btn-fruits" href="#">Fruits</a></li>
+        <li><a id="btn-animals" href="#">Animals</a></li>
+        <li><a  id="btn-colors" href="#">Colors</a></li>
+        <li><a  id="btn-food" href="#">Food</a></li>
+     </ul>
+     </li>
+   </div>
+    <li><a href="#" id="nav-create">Create Library</a></li>
+    <li><a href="#" id="nav-about">About</a></li>
+  </ul>
+</nav>
+    <section>
+   <div id="category-picker" >
+    
+     <!-- <ul>
+        <li><a id="btn-numbers" href="#" >Numbers</a></li>
+        <li><a  id="btn-nouns" href="#">Nouns</a></li>
+        <li><a id="btn-fruits" href="#">Fruits</a></li>
+        <li><a id="btn-animals" href="#">Animals</a></li>
+        <li><a  id="btn-colors" href="#">Colors</a></li>
+        <li><a  id="btn-food" href="#">Food</a></li>
+     </ul>
+   </div> -->
+     <div id="card">
+        <h2 id="word"></h2>
+        <p id="meaning"></p>
+        <img id="card-image" src="" alt="Flashcard image">
+     </div>
+     <button id="next">Next</button>
+     <button id="prev">Previous</button>
+    </section>
+  
+
+
+    <script src="script.js"></script>
+</body>
+</html>

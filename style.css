@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+   
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+   font-family: "Outfit", sans-serif;
+}
+  
+
+
+body {
+  background-color: #ffffff; /* white background */
+  color: #000000; /* black text by default */
+  min-height: 100vh;
+}
+
+/* Navbar */
+nav {
+  background-color: #000000;  /* black navbar */
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* App name */
+nav .app-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e67e22; /* orange for app name */
+}
+
+/* Navbar menu */
+
+  nav ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  position: relative;
+}
+nav ul li.dropdown {
+  position: relative;
+}
+nav ul li .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%; /* right below parent li */
+  left: 0;
+  background-color: #000000; /* black background */
+  padding: 0.5rem 0;
+  border-radius: 0 0 5px 5px;
+  min-width: 150px;
+  z-index: 1000;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+nav ul li.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Dropdown menu items */
+nav ul li .dropdown-menu li {
+  width: 100%;
+}
+
+/* Dropdown links styling */
+nav ul li .dropdown-menu li a {
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  display: block;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for dropdown links */
+nav ul li .dropdown-menu li a:hover {
+  background-color: #e67e22; /* orange highlight */
+  cursor: pointer;
+}
+nav ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #e67e22; /* orange on hover */
+  cursor: pointer;
+}
+
+/* Flashcard container */
+section {
+  max-width: 600px;
+  margin: 2rem auto;
+  background-color: #ffffff; /* white */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  border: 2px solid #e67e22; /* orange border */
+}
+
+/* Word heading */
+#word {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #000000;
+}
+
+/* Meaning paragraph */
+#meaning {
+  font-size: 1.2rem;
+  color: #555555; /* gray text */
+  margin-bottom: 1rem;
+}
+
+/* Image styling */
+#card-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  border: 2px solid #e67e22; /* orange border around image */
+}
+
+/* Buttons */
+button {
+  background-color: #e67e22; /* orange button */
+  border: none;
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  margin: 0 0.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: #cf7119; /* darker orange on hover */
+}
