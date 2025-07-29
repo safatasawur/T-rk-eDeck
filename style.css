@@ -103,9 +103,25 @@ section {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   text-align: center;
   border: 2px solid #e67e22; /* orange border */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Word heading */
+#card {
+  width: 300px;
+  height: 350px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 30px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 #word {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -120,12 +136,21 @@ section {
 }
 
 /* Image styling */
+#card h2 {
+  font-size: 27px;
+  color: #333;
+}
+
+#card p {
+  color: #666;
+  font-size: 20px;
+}
 #card-image {
   max-width: 100%;
-  height: auto;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  border: 2px solid #e67e22; /* orange border around image */
+  height: 200px;
+  border-radius: 8px;
+  
+  object-fit: contain; /* orange border around image */
 }
 
 /* Buttons */
@@ -144,4 +169,8 @@ button {
 
 button:hover {
   background-color: #cf7119; /* darker orange on hover */
+}
+
+#create-library-section{
+    display: none;
 }

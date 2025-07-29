@@ -9,6 +9,9 @@
 //     meaning: "water",
 //     image: "imgs/water.png"
 //   }
+
+
+
 // ];
 const categories = {
   animals: [
@@ -71,28 +74,34 @@ const categories = {
     { word: "sandalye", meaning: "chair", image: "imgs/chair.jpeg" },
     { word: "telefon", meaning: "phone", image: "imgs/phone.jpeg" }
   ],
-  numbers: [
-    { word: "bir", meaning: "one", image: "imgs/number1.jpeg" },
-    { word: "iki", meaning: "two", image: "imgs/number2.jpeg" },
-    { word: "üç", meaning: "three", image: "imgs/number3.jpeg" },
-    { word: "dört", meaning: "four", image: "imgs/number4.jpeg" },
-    { word: "beş", meaning: "five", image: "imgs/number5.jpeg" },
-    { word: "altı", meaning: "six", image: "imgs/number6.jpeg" },
-    { word: "yedi", meaning: "seven", image: "imgs/number7.jpeg" },
-    { word: "sekiz", meaning: "eight", image: "imgs/number8.jpeg" },
-    { word: "dokuz", meaning: "nine", image: "imgs/number9.jpeg" },
-    { word: "on", meaning: "ten", image: "imgs/number10.jpeg" }
-  ]
+ numbers: [
+  { word: "bir", meaning: "one", image: "imgs/NUMBERS/1.png" },
+  { word: "iki", meaning: "two", image: "imgs/NUMBERS/2.png" },
+  { word: "üç", meaning: "three", image: "imgs/NUMBERS/3.png" },
+  { word: "dört", meaning: "four", image: "imgs/NUMBERS/4.png" },
+  { word: "beş", meaning: "five", image: "imgs/NUMBERS/5.png" },
+  { word: "altı", meaning: "six", image: "imgs/NUMBERS/6.png" },
+  { word: "yedi", meaning: "seven", image: "imgs/NUMBERS/7.png" },
+  { word: "sekiz", meaning: "eight", image: "imgs/NUMBERS/8.png" },
+  { word: "dokuz", meaning: "nine", image: "imgs/NUMBERS/9.png" },
+  { word: "on", meaning: "ten", image: "imgs/NUMBERS/10.png" },
+  { word: "yirmi", meaning: "twenty", image: "imgs/NUMBERS/20.png" },
+  { word: "otuz", meaning: "thirty", image: "imgs/NUMBERS/30.png" },
+  { word: "kırk", meaning: "forty", image: "imgs/NUMBERS/40.png" },
+  { word: "elli", meaning: "fifty", image: "imgs/NUMBERS/50.png" },
+  { word: "altmış", meaning: "sixty", image: "imgs/NUMBERS/60.png" },
+  { word: "yetmiş", meaning: "seventy", image: "imgs/NUMBERS/70.png" },
+  { word: "seksen", meaning: "eighty", image: "imgs/NUMBERS/80.png" },
+  { word: "doksan", meaning: "ninety", image: "imgs/NUMBERS/90.png" },
+  { word: "yüz", meaning: "one hundred", image: "imgs/NUMBERS/100.png" },
+  { word: "bin", meaning: "one thousand", image: "imgs/NUMBERS/1000.png" }
+]
+
 };
 
 let currentIndex = 0;
 let currentCards = []
-// const categoryNouns = document.getElementById('btn-nouns')
-// const categoryColors = document.getElementById('btn-colors')
-// const categoryNumbers = document.getElementById('btn-numebrs')
-// const categoryAnimals = document.getElementById('btn-animals')
-// const categoryFruits = document.getElementById('btn-fruits')
-// const categoryFood = document.getElementById('btn-food')
+
 
 const wordEl = document.getElementById("word");
 const meaningEl = document.getElementById("meaning");
@@ -100,6 +109,7 @@ const imgEl = document.getElementById("card-image");
 
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
+
 function loadCategory(categoryName){
     if (!categories[categoryName] || categories[categoryName].length === 0) {
     alert("No flashcards in this category yet!");
@@ -146,28 +156,54 @@ categoryButtons.forEach(category=>{
     })
 })
 })
+// --------------------library---------------------
 
-// categoryAnimals.addEventListener('click',(e)=>{
-//      e.preventDefault();
-//      loadCategory('animals')
-// })
-// categoryFruits.addEventListener('click',(e)=>{
-//      e.preventDefault();
-//      loadCategory('fruits')
-// })
-// categoryNouns.addEventListener('click',(e)=>{
-//      e.preventDefault();
-//      loadCategory('nouns')
-// })
-// categoryColors.addEventListener('click',(e)=>{
-//      e.preventDefault();
-//      loadCategory('colors')
-// })
-// categoryNumbers.addEventListener('click',(e)=>{
-//      e.preventDefault();
-//      loadCategory('numbers')
-// })
-// categoryFood.addEventListener('click',(e)=>{
-//      e.preventDefault();
-//      loadCategory('food')
-// })
+
+
+const userLibraries ={}
+const namesLibrary = new Set()
+document.addEventListener("DOMContentLoaded", () => {
+const newLibraryForm = document.getElementById('create-library-section')
+const createLibrary = document.getElementById('create-library')
+const cancelLibrary = document.getElementById('cancel-create-library')
+const createNewLibrary = document.getElementById('btn-create-library')
+createNewLibrary.addEventListener('click',(e)=>{
+    
+    e.preventDefault()
+    newLibraryForm.style.display ='block'
+    console.log("clicked create")
+})
+createLibrary.addEventListener('click',(e)=>{
+      e.preventDefault()
+       
+      const formInput = document.querySelector('.libraryName-Input')
+      const nameOfLibrary= document.querySelector('.libraryName-Input').value
+      const li = document.createElement('li')
+       li.classList.add('user-Library')
+       if (nameOfLibrary.trim() === "") {
+         alert("Please enter a library name");
+         return;}
+
+        if (namesLibrary.has(nameOfLibrary)){
+        
+        alert("Library with same name exist") 
+            return
+        }
+        li.textContent = nameOfLibrary;
+        namesLibrary.add(nameOfLibrary)
+     
+    
+     const libraryListParent= document.querySelector('.library-li')
+     libraryListParent.appendChild(li)
+     formInput.value=""
+     newLibraryForm.style.display = "none"
+
+     
+    })
+ cancelLibrary.addEventListener('click',()=>{
+    const formInput = document.querySelector('.libraryName-Input')
+    formInput.value=""
+    newLibraryForm.style.display = "none"
+ })
+
+})
