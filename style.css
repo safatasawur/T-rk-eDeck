@@ -173,6 +173,26 @@ button:hover {
   background-color: #000000;
   color: #e67e22;
 }
+.btn {
+  background-color: #e67e22; /* orange button */
+  border: none;
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  margin: 0 0.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  /* background-color: #cf7119;  */
+  /* darker orange on hover */
+  background-color: #000000;
+  color: #e67e22;
+}
 #library-section{
   display: none;
 }
@@ -185,9 +205,7 @@ button:hover {
   cursor: pointer;
 }
 
-.library-li .user-library{
-  
-}
+
 /* ===== Library List ===== */
 #libraries-list ul.library-li {
   display: flex;
@@ -320,7 +338,7 @@ button:hover {
 }
 
 /* ===== Vocab List ===== */
-#vocablist-heading {
+/* #vocablist-heading {
   margin-top: 30px;
   background: #eee;
   color: #333;
@@ -332,7 +350,7 @@ button:hover {
   max-width: 300px;
   margin-left: auto;
   margin-right: auto;
-}
+} */
 
 #vocab-list {
   margin-top: 10px;
@@ -340,4 +358,65 @@ button:hover {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+}
+
+#vocab-section {
+  margin-top: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  border: 2px solid #e67e22;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+#vocab-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#vocab-form input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 45%;
+  min-width: 150px;
+}
+
+#vocab-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 16px;
+}
+
+#vocab-table th,
+#vocab-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+#vocab-table th {
+  background-color: #f7f7f7;
+  color: #000;
+}
+
+#vocab-table td button {
+  background-color: #e67e22;
+  border: none;
+  padding: 6px 10px;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#vocab-table td button:hover {
+  background-color: #000;
+  color: #e67e22;
 }

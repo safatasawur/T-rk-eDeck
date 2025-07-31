@@ -228,7 +228,9 @@ createNewLibrary.addEventListener('click',(e)=>{
     const noContentText = document.getElementById('no-content-msg')
     const customVocab = document.getElementById('vocab-list')
     const vocabHeading = document. getElementById('vocablist-heading')
-   libraryListParent.addEventListener('click', (e) => {
+   
+   
+    libraryListParent.addEventListener('click', (e) => {
     if (e.target.classList.contains('user-Library')) {
     selectedLibraryName = e.target.getAttribute('data-name');
     document.getElementById('create-library-section').style.display = 'none';
@@ -238,6 +240,7 @@ createNewLibrary.addEventListener('click',(e)=>{
     librarySection.style.display ="none"
     customLibraryTitle.textContent = selectedLibraryName
     console.log('you opened the library :',selectedLibraryName);
+    renderCustomerFlashCard(selectedLibraryName);
    
   }
 });
@@ -251,7 +254,8 @@ backArrow1.addEventListener('click', (e)=>{
   e.preventDefault()
   
   customLibrarySection.style.display='none'
-  newLibraryForm.style.display ='block'
+  newLibraryForm.style.display ='none'
+  librarySection.style.display= 'block'
 })
 customAddFlashCard.addEventListener('click',(e)=>{
   e.preventDefault()
@@ -263,12 +267,14 @@ customAddFlashCard.addEventListener('click',(e)=>{
  const formWord = document.getElementById('custom-word')
  const formMeaning = document.getElementById('custom-meaning')
  const formImage= document.getElementById('custom-image')
- const flashCardContainer = document.getElementById('custom-flashcards')
+ 
 saveFlashCard.addEventListener('click',(e)=>{
   e.preventDefault()
+  // vocabHeading.style.display="block"
   if (!selectedLibraryName) {
   alert("Please select a library first!");
   return;
+  
 }
 
    const Fword = formWord.value.trim()
@@ -283,6 +289,8 @@ saveFlashCard.addEventListener('click',(e)=>{
     {cardData.imageURL = URL.createObjectURL(Fimage);}
     addFlashCardForm.style.display = "none";
      userLibraries[selectedLibraryName].flashcards.push(cardData)
+     console.log("Saved to:", selectedLibraryName, userLibraries[selectedLibraryName].flashcards);
+
      console.log(userLibraries);
      
 
@@ -296,8 +304,11 @@ saveFlashCard.addEventListener('click',(e)=>{
   formImage.value = "";
 })
 function renderCustomerFlashCard(libraryName){
+  const flashCardContainer = document.getElementById('custom-flashcards')
+
       flashCardContainer.innerHTML = "";
-       const flashcards = userLibraries[libraryName].flashcards;
+      const flashcards = userLibraries[libraryName]?.flashcards || []
+       
          flashcards.forEach(card => {
     const div = document.createElement('div');
     div.classList.add('user-flashcard');
@@ -307,16 +318,10 @@ function renderCustomerFlashCard(libraryName){
       ${card.imageURL ? `<img src="${card.imageURL}" alt="Flashcard image">` : ""}
     `;
     flashCardContainer.appendChild(div);
-  });
-  //    const div = document.createElement('div')
-  //    div.classList.add('user-flashcard')
-  //    flashCardContainer.appendChild(div)
-     
-  //    div.innerHTML = `<h2>${cardData.word}</h2>
-  // <p>${cardData.meaning}</p>
-  // ${cardData.imageURL ? `<img src="${cardData.imageURL}" alt="Flashcard image">` : ""}`
-}
+    console.log("Rendering flashcards for:", libraryName, userLibraries[libraryName]);
 
+  });}
+ 
 
 function hideAllSections() {
     const sections = document.querySelectorAll('section');
@@ -325,7 +330,6 @@ function hideAllSections() {
     });
 }
 })
-
 
 
 

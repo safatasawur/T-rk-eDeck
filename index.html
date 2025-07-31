@@ -71,6 +71,10 @@
   <button id="btn-add-flashcard"> Flashcards</button>
   
   <!-- Form to add new flashcard -->
+   <!-- <div id="back-arrow" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+     <span style="font-size: 24px;">←</span>
+    <span>Back</span>
+    </div> -->
   <div id="add-flashcard-form" style="display: none;">
     <div id="back-arrow" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
      <span style="font-size: 24px;">←</span>
@@ -89,10 +93,35 @@
 
   <!-- Vocab list -->
   <!-- <h3>Your Vocabulary List</h3> -->
-   <button disabled style="cursor: default;" id="vocablist-heading">Your Vocabulary List</button>
+   <button class="btn">Your Vocabulary List</section></button>
+   <!--  -->
   <ul id="vocab-list"></ul>
   </section>
+  <section id="flashcard-section"></section>
   
+  <section id="vocab-section">
+  <h2 id="vocablist-heading">Vocabulary List</h2>
+
+  <form id="vocab-form">
+    <input type="text" id="vocab-word" placeholder="Enter word" required />
+    <input type="text" id="vocab-meaning" placeholder="Enter meaning" required />
+    <button type="submit">Add Word</button>
+  </form>
+
+  <table id="vocab-table">
+    <thead>
+      <tr>
+        <th>Word</th>
+        <th>Meaning</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="vocab-body">
+      <!-- Vocab entries will appear here -->
+    </tbody>
+  </table>
+</section>
+
 
 
     <script src="script.js"></script>
