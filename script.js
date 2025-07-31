@@ -299,6 +299,7 @@ saveFlashCard.addEventListener('click',(e)=>{
 
  
    
+    
  formWord.value = "";
   formMeaning.value = "";
   formImage.value = "";
