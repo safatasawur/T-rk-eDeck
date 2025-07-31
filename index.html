@@ -7,9 +7,10 @@
     <title>TurkceDeck</title>
 </head>
 <body>
-    <nav>
+    <nav id="nav-library">
   <div class="app-name">TürkçeDeck</div>
   <ul>
+     <li><a href="#" id="nav-home">Home</a></li>
     <li class="dropdown">
         <a href="#" id="nav-flashcards">Flash Cards</a>
      <ul class="dropdown-menu">
@@ -26,18 +27,11 @@
     <li><a href="#" id="nav-about">About</a></li>
   </ul>
 </nav>
-    <section>
+     <section id="home-section"></section>
+    <section  id="flashcard-section">
    <div id="category-picker" >
     
-     <!-- <ul>
-        <li><a id="btn-numbers" href="#" >Numbers</a></li>
-        <li><a  id="btn-nouns" href="#">Nouns</a></li>
-        <li><a id="btn-fruits" href="#">Fruits</a></li>
-        <li><a id="btn-animals" href="#">Animals</a></li>
-        <li><a  id="btn-colors" href="#">Colors</a></li>
-        <li><a  id="btn-food" href="#">Food</a></li>
-     </ul>
-   </div> -->
+ 
      <div id="card">
         <h2 id="word"></h2>
         <p id="meaning"></p>
@@ -47,21 +41,57 @@
      <button id="prev">Previous</button>
     </section>
     <section id="library-section" >
-     <h2>My Libraries</h2>
-     <div id="libraries-list">
-        <ul class="library-li">
+       <h2>My Libraries</h2>
+       <div id="libraries-list">
+         <ul class="library-li">
 
-        </ul>
-     </div>
+         </ul>
+       </div>
     <a href="#" id="btn-create-library">Create New Library</a> 
-    <section id="create-library-section" >
+
+       <section id="create-library-section" >
       <form id="create-library-form">
-      <input type="text" id="library-name-input" placeholder="Enter library name" required class="libraryName-Input"/>
-      <button type="submit" id="create-library">Create</button>
-      <button type="button" id="cancel-create-library">Cancel</button>
-  </form>
+         <input type="text" id="library-name-input" placeholder="Enter library name" required class="libraryName-Input"/>
+         <button type="submit" id="create-library">Create</button>
+          <button type="button" id="cancel-create-library">Cancel</button>
+          </form>
+        </section>
+    </section>
+    
+
+   
+     <section id="custom-library-section">
+      <div id="back-arrow1" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+     <span style="font-size: 24px;">←</span>
+    <span>Back</span>
+    </div>
+    <h2 id="custom-library-title"></h2>
+  <!-- <p id="no-content-msg">You don't have any content here.</p> -->
+  
+  <button id="btn-add-flashcard"> Flashcards</button>
+  
+  <!-- Form to add new flashcard -->
+  <div id="add-flashcard-form" style="display: none;">
+    <div id="back-arrow" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+     <span style="font-size: 24px;">←</span>
+    <span>Back</span>
+    </div>
+    <input type="text" id="custom-word" placeholder="Word" />
+    <input type="text" id="custom-meaning" placeholder="Meaning" />
+    <!-- <input type="text" id="custom-image" placeholder="Image URL (optional)" /> -->
+    <input type="file" id="custom-image" accept="image/*">
+
+    <button id="save-flashcard">Save</button>
+  </div>
+
+  <!-- Custom flashcards area -->
+  <div id="custom-flashcards"></div>
+
+  <!-- Vocab list -->
+  <!-- <h3>Your Vocabulary List</h3> -->
+   <button disabled style="cursor: default;" id="vocablist-heading">Your Vocabulary List</button>
+  <ul id="vocab-list"></ul>
   </section>
-   </section>
   
 
 

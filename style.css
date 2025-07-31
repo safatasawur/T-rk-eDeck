@@ -168,9 +168,176 @@ button {
 }
 
 button:hover {
-  background-color: #cf7119; /* darker orange on hover */
+  /* background-color: #cf7119;  */
+  /* darker orange on hover */
+  background-color: #000000;
+  color: #e67e22;
 }
-
+#library-section{
+  display: none;
+}
 #create-library-section{
     display: none;
+}
+/* ----- */
+.library-li li{
+  list-style: none;
+  cursor: pointer;
+}
+
+.library-li .user-library{
+  
+}
+/* ===== Library List ===== */
+#libraries-list ul.library-li {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+  max-width: 500px;
+  margin: auto;
+}
+
+/* ===== Library Items ===== */
+#libraries-list ul.library-li li {
+  background-color: #f1f1f1;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-align: center;
+}
+
+#libraries-list ul.library-li li:hover {
+  background-color: #e0e0e0;
+}
+
+/* ===== Create Library Section ===== */
+#create-library-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+#create-library-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  max-width: 500px;
+  justify-content: center;
+}
+
+#library-name-input {
+  flex: 1 1 250px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ===== Back Arrows ===== */
+#back-arrow,
+#back-arrow1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  color: black;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  width: fit-content;
+}
+
+#back-arrow:hover,
+#back-arrow1:hover {
+  transform: scale(1.02);
+  background: #e67e22;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* ===== Flashcard Add Button Container ===== */
+#btn-add-flashcard {
+  margin-top: 10px;
+}
+
+/* ===== Add Flashcard Form ===== */
+#add-flashcard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin: 30px auto 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#add-flashcard-form input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Save Flashcard Button */
+#save-flashcard {
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* ===== Custom Flashcards Layout ===== */
+#custom-flashcards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin: 30px auto;
+  max-width: 1000px;
+}
+
+/* Each Flashcard */
+.user-flashcard {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  width: 220px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.user-flashcard img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+/* ===== Vocab List ===== */
+#vocablist-heading {
+  margin-top: 30px;
+  background: #eee;
+  color: #333;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: default;
+  text-align: center;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#vocab-list {
+  margin-top: 10px;
+  padding-left: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
