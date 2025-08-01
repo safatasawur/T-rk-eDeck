@@ -216,18 +216,19 @@ createNewLibrary.addEventListener('click',(e)=>{
      
     })
     
-   
+   //////////////////Library related/////////////////
    let selectedLibraryName = null
    const backArrow1 = document.getElementById('back-arrow1')
    const backArrow = document.getElementById('back-arrow')
    const customLibrarySection = document.getElementById('custom-library-section');
    const customLibraryTitle = document.getElementById('custom-library-title')
-   const customAddFlashCard = document.getElementById('btn-add-flashcard')
+   const OpenFlashCardSection = document.getElementById('btn-add-flashcard')
    const addFlashCardForm = document.getElementById('add-flashcard-form')
    const saveFlashCard = document.getElementById('save-flashcard')
     const noContentText = document.getElementById('no-content-msg')
-    const customVocab = document.getElementById('vocab-list')
-    const vocabHeading = document. getElementById('vocablist-heading')
+    
+    const addFlashCard = document.getElementById('add-flashcard-btn')
+    const flashCardSection=document.getElementById('custom-flashcard-section')
    
    
     libraryListParent.addEventListener('click', (e) => {
@@ -241,14 +242,21 @@ createNewLibrary.addEventListener('click',(e)=>{
     customLibraryTitle.textContent = selectedLibraryName
     console.log('you opened the library :',selectedLibraryName);
     renderCustomerFlashCard(selectedLibraryName);
-   
+    librarySection.style.display="none"
   }
 });
+addFlashCard.addEventListener('click',(e)=>{
+  e.preventDefault();
+  addFlashCardForm.style.display = 'block'
+
+})
 backArrow.addEventListener('click', (e)=>{
   e.preventDefault()
   
   vocabHeading.style.display="block"
   addFlashCardForm.style.display ='none'
+  flashCardSection.style.display='none'
+  customLibrarySection.style.display ='block'
 })
 backArrow1.addEventListener('click', (e)=>{
   e.preventDefault()
@@ -257,11 +265,14 @@ backArrow1.addEventListener('click', (e)=>{
   newLibraryForm.style.display ='none'
   librarySection.style.display= 'block'
 })
-customAddFlashCard.addEventListener('click',(e)=>{
+OpenFlashCardSection.addEventListener('click',(e)=>{
   e.preventDefault()
-    customVocab.style.display ="none"
-    vocabHeading.style.display="none"
-  addFlashCardForm.style.display ='block'
+    
+    // vocabHeading.style.display="none"
+  addFlashCardForm.style.display ='none'
+  flashCardSection.style.display = 'block'
+  customLibrarySection.style.display ='none'
+
 
 })
  const formWord = document.getElementById('custom-word')
@@ -270,7 +281,8 @@ customAddFlashCard.addEventListener('click',(e)=>{
  
 saveFlashCard.addEventListener('click',(e)=>{
   e.preventDefault()
-  // vocabHeading.style.display="block"
+    addFlashCardForm.style.display = 'none'
+
   if (!selectedLibraryName) {
   alert("Please select a library first!");
   return;
@@ -299,7 +311,7 @@ saveFlashCard.addEventListener('click',(e)=>{
 
  
    
-    
+
  formWord.value = "";
   formMeaning.value = "";
   formImage.value = "";
@@ -322,8 +334,72 @@ function renderCustomerFlashCard(libraryName){
     console.log("Rendering flashcards for:", libraryName, userLibraries[libraryName]);
 
   });}
- 
+  // -----------------------vocab--------------------
+  
+  const vocabHeading = document. getElementById('Vocablist-heading')
+  const vocabSection =document.getElementById('vocab-section')
+  const vocabForm =document.getElementById('vocab-form')
+  const saveVocabBtn = document.getElementById('save-vocab-button')
+  const addVocabBtn =document.getElementById('add-vocab-word')
+  const backArrow2 = document.getElementById('back-arrow2')
+  const vocabWord = document.getElementById('vocab-word')
+  const vocabMeaning = document.getElementById('vocab-meaning')
+  const vocabBody = document.getElementById('vocab-body')
+  
+  vocabHeading.addEventListener('click',(e)=>{
+    customLibrarySection.style.display ='none'
+  })
+  backArrow2.addEventListener('click',(e)=>{
+    // librarySection.style.display='block'
+    vocabSection.style.display='none'
+     customLibrarySection.style.display ='block'
+  })
+  vocabHeading.addEventListener('click',(e)=>{
+        vocabSection.style.display = 'block'
+        addFlashCard.style.display='none'
 
+  })
+  addVocabBtn.addEventListener('click',(e)=>{
+    vocabForm.style.display ='block'
+  })
+   saveVocabBtn.addEventListener('click',(e)=>{
+      vocabForm.style.display ='none'
+   })
+vocabForm.addEventListener('submit', function (e) {
+  e.preventDefault(); // prevent form reload
+
+  const word = vocabWord.value.trim();
+  const meaning = vocabMeaning.value.trim();
+
+  if (word === '' || meaning === '') return;
+
+  // Create table row
+  const row = document.createElement('tr');
+
+  // Create columns
+  row.innerHTML = `
+    <td>${word}</td>
+    <td>${meaning}</td>
+    <td>
+      <button class="delete-btn">Delete</button>
+    </td>
+  `;
+
+  vocabBody.appendChild(row);
+
+  // Clear input fields
+  vocabWord.value = '';
+  vocabMeaning.value = '';
+  vocabForm.style.display = 'none';
+});
+
+
+vocabBody.addEventListener('click', function (e) {
+  if (e.target.classList.contains('delete-btn')) {
+    const row = e.target.closest('tr');
+    row.remove();
+  }
+})
 function hideAllSections() {
     const sections = document.querySelectorAll('section');
     sections.forEach(section => {
