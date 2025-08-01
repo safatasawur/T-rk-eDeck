@@ -1,4 +1,11 @@
 
+import { auth, db } from './firebase.js';
+import { signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+// your logic here
 
 
 
@@ -92,10 +99,93 @@ const categories = {
 document.addEventListener("DOMContentLoaded", () => {
   hideAllSections();
   const mainHome = document.getElementById('home-section')
-  mainHome.style.display='block'//make home section visble at first
+  // //make home section visble at first
     let currentIndex = 0;
 let currentCards = [] // array of current cuards of chose category
+// ----------------------login.signup part----------------------------
+const navBar = document.getElementById('nav-library')
+navBar.style.display='none'
+const login  = document.getElementById('login-section')
+const register  = document.getElementById('register-section')
+login.style.display=' block'
+const showRegister = document.getElementById('show-register')
+const showLogin = document.getElementById('show-login')
+const loginBtn = document.getElementById('login-btn')
+const registerBtn = document.getElementById('register-btn')
+const loginEInput = document.getElementById('login-email')
+const loginPInput = document.getElementById('login-password')
+const regEInput = document.getElementById('register-email')
+const regPInput = document.getElementById('register-password')
+loginBtn.addEventListener('click', (e)=>{
+  e.preventDefault()
+    const lEmail = loginEInput.value.trim()
+    const lPassword = loginPInput.value.trim()
+     
+     signInWithEmailAndPassword(auth, lEmail, lPassword)
+       .then((userCredential) => {
+         const user = userCredential.user;
+         console.log("Logged in as:", user.email);
+           mainHome.style.display='block'
+           navBar.style.display ='block'
+           login.style.display = 'none';
+          
+    })
+    .catch((error) => {
+      // ❌ Handle errors
+      console.error("Login error:", error.code, error.message);
+      alert("Login failed: " + error.message);
+    });
 
+
+
+
+
+    loginEInput.value =""
+    loginPInput.value= ""
+})
+
+showRegister.addEventListener('click',(e)=>{
+ e.preventDefault()
+//  register.style.display ='block'
+showSection(register)
+ login.style.display='none'
+})
+
+registerBtn.addEventListener('click', (e)=>{
+  e.preventDefault()
+    console.log("Register button clicked"); // ✅ Test line
+
+    const rEmail = regEInput.value.trim()
+    const rPassword = regPInput.value.trim()
+     
+   createUserWithEmailAndPassword(auth, rEmail, rPassword)
+   .then ((userCredential)=>{
+    const user = userCredential.user
+    console.log("user created :" ,user);
+    mainHome.style.display ='block'
+    navBar.style.display ='block'
+    login.style.display = 'none';
+
+    
+   })
+   .catch((error) => {
+  console.error("Registration error:", error.code, error.message);
+  alert("Registration failed: " + error.message);
+});
+
+
+
+
+
+    regEInput.value =""
+    regPInput.value= ""
+})
+showLogin.addEventListener('click',(e)=>{
+ e.preventDefault()
+ register.style.display ='none'
+//  login.style.display='block'
+showSection(login)
+})
 
 const wordEl = document.getElementById("word");
 const meaningEl = document.getElementById("meaning");
@@ -150,8 +240,15 @@ categoryButtons.forEach(category=>{
     })
 })
 // --------------------library---------------------
+const navHome = document.getElementById('nav-home')
 const navLibrary = document.getElementById('nav-create'); // Adjust ID to match your HTML
-const navFlashCards = document.getElementById('nav-flashcards'); // Adjust ID to match your HTML
+const navFlashCards = document.getElementById('nav-flashcards');
+ navHome.addEventListener('click', (e) => {
+    e.preventDefault();
+    // hideAllSections();
+    // document.getElementById('flashcard-section').style.display = 'block';
+    showSection(mainHome)
+});
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
     hideAllSections();
@@ -405,6 +502,12 @@ function hideAllSections() {
     sections.forEach(section => {
         section.style.display = 'none';
     });
+}
+function showSection( section) {
+ const sections = document.querySelectorAll('section');
+  sections.forEach(sec => sec.style.display = 'none');
+  section.style.display = 'block';
+
 }
 })
 

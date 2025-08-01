@@ -5,23 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>TurkceDeck</title>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-
-<!-- Firebase Auth -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-
+    
 <!-- Firebase Firestore -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-    <script src="firebase.js"></script>
+    <script src="firebase.js" type="module"></script>
 </head>
 <body>
     <nav id="nav-library">
-  <div class="app-name">TürkçeDeck</div>
-  <ul>
+      <div class="nav-container">
+      <div class="app-name">TürkçeDeck</div>
+      <div class="nav-items">
+        <ul>
      <li><a href="#" id="nav-home">Home</a></li>
-    <li class="dropdown">
+      <li class="dropdown">
         <a href="#" id="nav-flashcards">Flash Cards</a>
-     <ul class="dropdown-menu">
+      <ul class="dropdown-menu">
         <li><a id="btn-numbers" href="#" >Numbers</a></li>
         <li><a  id="btn-nouns" href="#">Nouns</a></li>
         <li><a id="btn-fruits" href="#">Fruits</a></li>
@@ -30,12 +27,33 @@
         <li><a  id="btn-food" href="#">Food</a></li>
      </ul>
      </li>
-   </div>
+     
     <li><a href="#" id="nav-create">Your Library</a></li>
     <li><a href="#" id="nav-about">About</a></li>
   </ul>
+      </div>
+      
+  </div>
 </nav>
-     <section id="home-section"></section>
+<section id="login-section"  class="auth-section">
+  <h2>Login</h2>
+  <input type="email" id="login-email" placeholder="Email">
+  <input type="password" id="login-password" placeholder="Password">
+  <button id="login-btn">Login</button>
+  <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
+</section>
+
+<section id="register-section" style="display: none;"  class="auth-section">
+  <h2>Register</h2>
+  <input type="email" id="register-email" placeholder="Email">
+  <input type="password" id="register-password" placeholder="Password">
+  <button id="register-btn">Register</button>
+  <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+</section>
+
+     <section id="home-section"> 
+     
+  </section>
     <section  id="flashcard-section">
    <div id="category-picker" >
     
@@ -65,9 +83,7 @@
           </form>
         </section>
     </section>
-    
 
-   
      <section id="custom-library-section">
       <div id="back-arrow1" style="cursor: pointer; display: flex; align-items: center; gap: 6px;" class="arrow">
      <span style="font-size: 24px;">←</span>
@@ -139,6 +155,6 @@
 
 
 
-    <script src="script.js"></script>
+    <script  src="script.js" type="module"></script>
 </body>
 </html>
