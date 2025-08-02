@@ -99,12 +99,15 @@ const categories = {
 document.addEventListener("DOMContentLoaded", () => {
   hideAllSections();
   const mainHome = document.getElementById('home-section')
-  // //make home section visble at first
+
+    // //make home section visble at first
     let currentIndex = 0;
 let currentCards = [] // array of current cuards of chose category
 // ----------------------login.signup part----------------------------
-const navBar = document.getElementById('nav-library')
-navBar.style.display='none'
+
+   const navBar = document.getElementById('nav-library')
+   navBar.style.display='none'
+
 const login  = document.getElementById('login-section')
 const register  = document.getElementById('register-section')
 login.style.display=' block'
@@ -116,6 +119,9 @@ const loginEInput = document.getElementById('login-email')
 const loginPInput = document.getElementById('login-password')
 const regEInput = document.getElementById('register-email')
 const regPInput = document.getElementById('register-password')
+const logoutBtn = document.getElementById('logout-btn')
+const nameofUser = document.getElementById('profile-name')
+const emaIlOfUser = document.getElementById('profile-email')
 loginBtn.addEventListener('click', (e)=>{
   e.preventDefault()
     const lEmail = loginEInput.value.trim()
@@ -187,6 +193,49 @@ showLogin.addEventListener('click',(e)=>{
 showSection(login)
 })
 
+
+
+// const auth = getAuth();
+
+// This runs whenever the page loads
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // ✅ User is signed in, you can show the logged-in UI
+    console.log("User is logged in:", user.email);
+
+    // Example: Show library section or home page
+   login.style.display = 'none';
+    mainHome.style.display = 'block';
+    navBar.style.display='block'
+    nameOfUser.textContent = user.name || 'anonymus'
+    emailOfUser.textContent = user.email;
+
+  } else {
+    // ❌ No user is signed in, show login page
+    console.log("No user is logged in");
+
+    login.style.display = 'block';
+    mainHome.style.display = 'none';
+    navBar.style.display='none'
+  }
+});
+logoutBtn.addEventListener('click',(e)=>{
+  signOut(auth).then (()=>{
+    console.log("user logged out ");
+    location.reload()
+    
+  })
+})
+// -------------------profileeee-------------------------
+const navProfile = document.getElementById('nav-profile')
+const profileSection = document.getElementById('profile-section')
+navProfile.addEventListener('click', (e)=>{
+  e.preventDefault()
+  showSection(profileSection)
+})
+
+
+// --------------------------------------------------------------------
 const wordEl = document.getElementById("word");
 const meaningEl = document.getElementById("meaning");
 const imgEl = document.getElementById("card-image");

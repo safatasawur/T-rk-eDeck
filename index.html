@@ -30,6 +30,7 @@
      
     <li><a href="#" id="nav-create">Your Library</a></li>
     <li><a href="#" id="nav-about">About</a></li>
+    <li><a href="#" id="nav-profile">Profile</a></li>
   </ul>
       </div>
       
@@ -50,10 +51,32 @@
   <button id="register-btn">Register</button>
   <p>Already have an account? <a href="#" id="show-login">Login</a></p>
 </section>
+<!-- In your HTML -->
+<section id="profile-section" style="display: none;">
+  <div class="profile-container">
+    <h2>Your Profile</h2>
+    <p><strong>Name:</strong> <span id="profile-name">Loading...</span></p>
+    <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
+    <button id="logout-btn">Log Out</button>
+  </div>
+</section>
 
      <section id="home-section"> 
-     
+    <div class="home1">
+      <div class="hero-content">
+     <h1><span class="highlight">Welcome</span>  to  <span class="head1"><br><strong>TürkçeDeck</strong></h1></span>
+     <p class="tagline">Master Turkish — one fun flashcard at a time!</p>
+     <button class="cta-btn">Start Learning</button>
+     </div>
+     <div class="hero-image">
+     <img src="imgs/gene1.svg" alt="Learning illustration">
+     </div>
+    </div>
+    <!-- <div class="wave-divider">
+    <img src="imgs/gen/Minimalist Emblem Logo for TürkçeDeck (1280 x 769 px) (1).svg" alt="Wave divider">
+    </div> -->
   </section>
+  <section id="slider"></section>
     <section  id="flashcard-section">
    <div id="category-picker" >
     
@@ -105,8 +128,8 @@
   
    <!--  -->
   <!-- <ul id="vocab-list"></ul> -->
-  </section>
-  <section id="custom-flashcard-section">
+     </section>
+    <section id="custom-flashcard-section">
       
     <div id="back-arrow" style="cursor: pointer; display: flex; align-items: center; gap: 6px;" class="arrow">
      <span style="font-size: 24px;">←</span>
@@ -124,9 +147,9 @@
 
   <!-- Custom flashcards area -->
   <div id="custom-flashcards"></div>
-  </section>
+    </section>
   
-  <section id="vocab-section">
+    <section id="vocab-section">
     <div id="back-arrow2" style="cursor: pointer; display: flex; align-items: center; gap: 6px;" class="arrow">
      <span style="font-size: 24px;">←</span>
     <span>Back</span>
@@ -151,10 +174,11 @@
       <!-- Vocab entries will appear here -->
     </tbody>
   </table>
-</section>
+    </section>
 
 
 
+    <!-- <script  src="script.js" ></script> -->
     <script  src="script.js" type="module"></script>
 </body>
 </html>
