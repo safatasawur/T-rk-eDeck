@@ -3,7 +3,7 @@ import { auth, db } from './firebase.js';
 import { signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  signOut,updateProfile } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 // your logic here
 
@@ -103,14 +103,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // //make home section visble at first
     let currentIndex = 0;
 let currentCards = [] // array of current cuards of chose category
+// --------------------slider
+const sliderSection = document.getElementById('slider-section')
+
 // ----------------------login.signup part----------------------------
 
    const navBar = document.getElementById('nav-library')
    navBar.style.display='none'
 
 const login  = document.getElementById('login-section')
-const register  = document.getElementById('register-section')
 login.style.display=' block'
+
+const register  = document.getElementById('register-section')
 const showRegister = document.getElementById('show-register')
 const showLogin = document.getElementById('show-login')
 const loginBtn = document.getElementById('login-btn')
@@ -119,9 +123,10 @@ const loginEInput = document.getElementById('login-email')
 const loginPInput = document.getElementById('login-password')
 const regEInput = document.getElementById('register-email')
 const regPInput = document.getElementById('register-password')
+const regNInput = document.getElementById('register-name')
 const logoutBtn = document.getElementById('logout-btn')
-const nameofUser = document.getElementById('profile-name')
-const emaIlOfUser = document.getElementById('profile-email')
+const nameOfUser = document.getElementById('profile-name')
+const emailOfUser = document.getElementById('profile-email')
 loginBtn.addEventListener('click', (e)=>{
   e.preventDefault()
     const lEmail = loginEInput.value.trim()
@@ -134,6 +139,7 @@ loginBtn.addEventListener('click', (e)=>{
            mainHome.style.display='block'
            navBar.style.display ='block'
            login.style.display = 'none';
+            sliderSection.style.display ='block'
           
     })
     .catch((error) => {
@@ -157,35 +163,39 @@ showSection(register)
  login.style.display='none'
 })
 
-registerBtn.addEventListener('click', (e)=>{
+registerBtn.addEventListener('click', async (e)=>{
   e.preventDefault()
     console.log("Register button clicked"); // ✅ Test line
 
     const rEmail = regEInput.value.trim()
     const rPassword = regPInput.value.trim()
-     
-   createUserWithEmailAndPassword(auth, rEmail, rPassword)
-   .then ((userCredential)=>{
+    const rName = regNInput.value.trim()
+
+   try{
+    const userCredential = await createUserWithEmailAndPassword(auth, rEmail, rPassword)
     const user = userCredential.user
     console.log("user created :" ,user);
-    mainHome.style.display ='block'
+    await updateProfile(user, {
+      displayName : rName
+          })
+    alert("Registered successfully!");
+    console.log("User info:", user);
+     mainHome.style.display ='block'
     navBar.style.display ='block'
     login.style.display = 'none';
-
+    register.style.display = 'none';
+    sliderSection.style.display ='block'
     
-   })
-   .catch((error) => {
+   }
+     catch(error) {
   console.error("Registration error:", error.code, error.message);
   alert("Registration failed: " + error.message);
-});
+       };
 
-
-
-
-
-    regEInput.value =""
+ regEInput.value =""
     regPInput.value= ""
 })
+ 
 showLogin.addEventListener('click',(e)=>{
  e.preventDefault()
  register.style.display ='none'
@@ -201,13 +211,14 @@ showSection(login)
 onAuthStateChanged(auth, (user) => {
   if (user) {
     // ✅ User is signed in, you can show the logged-in UI
-    console.log("User is logged in:", user.email);
+    console.log("User is logged in:", user.email,user);
 
     // Example: Show library section or home page
    login.style.display = 'none';
     mainHome.style.display = 'block';
     navBar.style.display='block'
-    nameOfUser.textContent = user.name || 'anonymus'
+     sliderSection.style.display ='block'
+      nameOfUser.textContent = user.displayName || 'anonymus'
     emailOfUser.textContent = user.email;
 
   } else {
@@ -288,6 +299,7 @@ categoryButtons.forEach(category=>{
      loadCategory(category)
     })
 })
+//--------------------SLIDER----------------
 // --------------------library---------------------
 const navHome = document.getElementById('nav-home')
 const navLibrary = document.getElementById('nav-create'); // Adjust ID to match your HTML
@@ -296,7 +308,8 @@ const navFlashCards = document.getElementById('nav-flashcards');
     e.preventDefault();
     // hideAllSections();
     // document.getElementById('flashcard-section').style.display = 'block';
-    showSection(mainHome)
+    mainHome.style.display = 'block'
+    sliderSection.style.display = 'block'
 });
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
