@@ -4,11 +4,22 @@ import { signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signOut,updateProfile } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  import {collection,addDoc,getDocs} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // your logic here
 
+const addLibrary = async (userId,libraryName)=>{
+  try{
+  const libRef= collection(db,'users',userId,"libraries")
+  const docRef = await addDoc(libRef,{name:libraryName,createdAt: new Date()})
+  console.log('library created :', docRef.id);
+  return docRef.id;
 
+}
+catch(error){console.log('some error',error)}
+  }
 
+// -------------------------------flashcards------------------------------------
 const categories = {
   animals: [
     { word: "kedi", meaning: "cat", image: "imgs/cat.jpeg" },
@@ -105,6 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
 let currentCards = [] // array of current cuards of chose category
 // --------------------slider
 const sliderSection = document.getElementById('slider-section')
+const learningSection = document.getElementById('learning-tools')
+
 
 // ----------------------login.signup part----------------------------
 
@@ -140,6 +153,8 @@ loginBtn.addEventListener('click', (e)=>{
            navBar.style.display ='block'
            login.style.display = 'none';
             sliderSection.style.display ='block'
+              learningSection.style.display ='block'
+
           
     })
     .catch((error) => {
@@ -185,6 +200,7 @@ registerBtn.addEventListener('click', async (e)=>{
     login.style.display = 'none';
     register.style.display = 'none';
     sliderSection.style.display ='block'
+    learningSection.style.display ='block'
     
    }
      catch(error) {
@@ -208,18 +224,21 @@ showSection(login)
 // const auth = getAuth();
 
 // This runs whenever the page loads
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async(user) => {
   if (user) {
     // ✅ User is signed in, you can show the logged-in UI
     console.log("User is logged in:", user.email,user);
 
     // Example: Show library section or home page
-   login.style.display = 'none';
+    login.style.display = 'none';
     mainHome.style.display = 'block';
     navBar.style.display='block'
-     sliderSection.style.display ='block'
-      nameOfUser.textContent = user.displayName || 'anonymus'
+    sliderSection.style.display ='block'
+    learningSection.style.display ='block'
+
+    nameOfUser.textContent = user.displayName || 'anonymus'
     emailOfUser.textContent = user.email;
+   await  loadLibrary(user.uid)
 
   } else {
     // ❌ No user is signed in, show login page
@@ -304,12 +323,41 @@ categoryButtons.forEach(category=>{
 const navHome = document.getElementById('nav-home')
 const navLibrary = document.getElementById('nav-create'); // Adjust ID to match your HTML
 const navFlashCards = document.getElementById('nav-flashcards');
+const quizTool= document.querySelector('.quiz')
+const flashcardTool = document.querySelector('.flashcards')
+const LibraryTool = document.querySelector('.library')
+const FlashCardSection = document.getElementById('flashcard-section')
+LibraryTool.addEventListener('click',(e)=>{
+  e.preventDefault()
+  hideAllSections()
+  librarySection.style.display= 'block'
+      librarySection.scrollIntoView({ behavior: 'smooth' });
+
+})
+flashcardTool.addEventListener('click',(e)=>{
+  e.preventDefault()
+  hideAllSections()
+      FlashCardSection.style.display ='block'
+      FlashCardSection.scrollIntoView({ behavior: 'smooth' });
+
+})
+quizTool.addEventListener('click',(e)=>{
+  e.preventDefault()
+  hideAllSections()
+  librarySection.style.display= 'block'
+      librarySection.scrollIntoView({ behavior: 'smooth' });
+
+})
  navHome.addEventListener('click', (e) => {
     e.preventDefault();
     // hideAllSections();
     // document.getElementById('flashcard-section').style.display = 'block';
     mainHome.style.display = 'block'
     sliderSection.style.display = 'block'
+        learningSection.style.display ='block'
+        profileSection.style.display='none'
+        librarySection.style.display = 'none'
+
 });
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
@@ -328,12 +376,19 @@ const newLibraryForm = document.getElementById('create-library-section')
 const createLibrary = document.getElementById('create-library')
 const cancelLibrary = document.getElementById('cancel-create-library')
 const createNewLibrary = document.getElementById('btn-create-library')
+const libraryNameInput = document.querySelector('.libraryName-Input')
+
+
 //form displaying for creating new library
 createNewLibrary.addEventListener('click',(e)=>{
     
     e.preventDefault()
     newLibraryForm.style.display ='block'
-    console.log("clicked create")
+    
+    console.log("clicked ")
+
+    
+    
 })
  cancelLibrary.addEventListener('click',()=>{
     const formInput = document.querySelector('.libraryName-Input')
@@ -341,40 +396,79 @@ createNewLibrary.addEventListener('click',(e)=>{
     newLibraryForm.style.display = "none"
  })
 
-     const libraryListParent= document.querySelector('.library-li')
-      createLibrary.addEventListener('click',(e)=>{
-      e.preventDefault()
-       
-      const formInput = document.querySelector('.libraryName-Input')
-      const nameOfLibrary= document.querySelector('.libraryName-Input').value
-      const li = document.createElement('li')
-       li.classList.add('user-Library')
-       li.setAttribute("data-name", nameOfLibrary);
-            //  console.log(li.classList)
-       if (nameOfLibrary.trim() === "") {
-         alert("Please enter a library name");
-         return;}
-
-        if (namesLibrary.has(nameOfLibrary)){
+ function renderLibrary(nameOfLibrary){
+   if (namesLibrary.has(nameOfLibrary)){
         
         alert("Library with same name exist") 
             return
         }
+ 
+            //  console.log(li.classList)
+       if (nameOfLibrary.trim() === "") {
+         alert("Please enter a library name");
+         return;}
+               
+         const li = document.createElement('li')
         li.textContent = nameOfLibrary;
         namesLibrary.add(nameOfLibrary)
-     
-    
-     libraryListParent.appendChild(li)
-     formInput.value=""
+         li.classList.add('user-Library')
+       li.setAttribute("data-name", nameOfLibrary);
+        libraryListParent.appendChild(li)
+        
+     libraryNameInput.value=""
      newLibraryForm.style.display = "none"
+       if (!userLibraries[nameOfLibrary]){
      userLibraries[nameOfLibrary] ={ 
       flashcards: [],
-      vocabList: []}
-     console.log(userLibraries);
+      vocabList: []}}
+ }
+ const loadLibrary = async (userId)=>{
+  const libRef = collection(db,'users',userId,'libraries')
+  const snapshot = await getDocs(libRef)
+  snapshot.forEach((doc)=>{
+    const data = doc.data()
+    const name = data.name
+    renderLibrary(name)
+  })
+ }
+     const libraryListParent= document.querySelector('.library-li')
+      createLibrary.addEventListener('click',async(e)=>{
+      e.preventDefault()
+      const nameOfLibrary= libraryNameInput.value
+      // const li = document.createElement('li')
+      //  li.classList.add('user-Library')
+      //  li.setAttribute("data-name", nameOfLibrary);
+      //       //  console.log(li.classList)
+      //  if (nameOfLibrary.trim() === "") {
+      //    alert("Please enter a library name");
+      //    return;}
+
+      //   if (namesLibrary.has(nameOfLibrary)){
+        
+      //   alert("Library with same name exist") 
+      //       return
+      //   }
+      //   li.textContent = nameOfLibrary;
+      //   namesLibrary.add(nameOfLibrary)
      
+    
+    //  libraryListParent.appendChild(li)
+    //  libraryNameInput.value=""
+    //  newLibraryForm.style.display = "none"
+    //  userLibraries[nameOfLibrary] ={ 
+    //   flashcards: [],
+    //   vocabList: []}
+    //  console.log(userLibraries);
+      const user = auth.currentUser
+     await addLibrary(user.uid, nameOfLibrary)
+          renderLibrary(nameOfLibrary)
+
+      console.log("Clicked createLibrary");
+     console.log("Library name:", nameOfLibrary);
+     console.log("Current user:", user?.uid);
      
     })
-    
+  
    //////////////////Library related/////////////////
    let selectedLibraryName = null
    const backArrow1 = document.getElementById('back-arrow1')

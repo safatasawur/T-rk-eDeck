@@ -149,14 +149,19 @@ section {
 }
 
 /* Word heading */
+
+/* #flashcard-section{
+  padding: 5px;
+  background-color: pink;
+}
 #card {
   width: 300px;
   height: 350px;
   background-color: white;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  margin: 30px auto;
+  padding: 10px;
+  margin: 10px auto;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -168,14 +173,14 @@ section {
   color: #000000;
 }
 
-/* Meaning paragraph */
+
 #meaning {
   font-size: 1.2rem;
-  color: #555555; /* gray text */
+  color: #555555; 
   margin-bottom: 1rem;
 }
 
-/* Image styling */
+
 #card h2 {
   font-size: 27px;
   color: #333;
@@ -190,8 +195,66 @@ section {
   height: 200px;
   border-radius: 8px;
   
-  object-fit: contain; /* orange border around image */
+  object-fit: contain; 
+} */
+#flashcard-section {
+  padding: 20px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
 }
+
+.category-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: -70px;
+  margin-left: -20px;
+  /* border: 2px black solid; */
+  width: 100%;
+  justify-content: center;
+ 
+  
+
+}
+
+#card {
+  width: 300px;
+  height: 350px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#card-image {
+  max-height: 200px;
+  object-fit: contain;
+  margin-top: 10px;
+}
+
+.card-buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.card-buttons button {
+  padding: 8px 16px;
+  font-size: 1rem;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 
 /* Buttons */
 button {
@@ -235,6 +298,7 @@ button:hover {
 }
 #library-section{
   display: none;
+  
 }
 #create-library-section{
     display: none;
@@ -283,6 +347,9 @@ button:hover {
   margin-top: 20px;
   display: flex;
   justify-content: center;
+  width: 100%;
+  height: 60%;
+  margin: auto;
 }
 
 #create-library-form {
@@ -292,6 +359,7 @@ button:hover {
   align-items: center;
   max-width: 500px;
   justify-content: center;
+  margin: auto;
 }
 
 #library-name-input {
@@ -845,7 +913,117 @@ section {
 
 
 /* --------------------------- */
+.learning-tools {
+  display: flex;
+  gap: 25px;
+  padding: 5px 20px;
+  justify-content: center;
+  background-color: #fdfdfd;
+}
+.tool-container{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.tool-card {
+  width: 350px;
+  min-height: 450px;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  color: #222;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Top Right Age Label */
+.tool-age {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #333;
+  background: rgba(255,255,255,0.6);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* SVG or Image */
+/* .tool-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin: 30px auto 20px;
+} */
+ .tool-video {
+  width: 70%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Unique Backgrounds */
+.quiz {
+  background-color:#e67e22;
+}
+
+.flashcards {
+  background-color: #e67e22;
+}
+
+.library {
+  background-color: #e67e22;
+}
+
+
 
   
-  
-  
+  .footer {
+  background: #1a1a1a;
+  color: #f0f0f0;
+  padding: 40px 20px;
+}
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.footer-grid h4 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+.footer-grid ul {
+  list-style: none;
+  padding: 0;
+}
+.footer-grid li {
+  margin-bottom: 6px;
+}
+.footer-grid a {
+  color: #ffa500;
+  text-decoration: none;
+}
+.footer-grid a:hover {
+  text-decoration: underline;
+}
+.social-icons img {
+  width: 24px;
+  margin-right: 10px;
+  filter: brightness(90%);
+}
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.85rem;
+  color: #888;
+}
