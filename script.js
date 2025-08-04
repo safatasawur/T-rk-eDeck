@@ -18,7 +18,14 @@ const addLibrary = async (userId,libraryName)=>{
 }
 catch(error){console.log('some error',error)}
   }
-
+const addFlashCards = async (userId,libraryId,flashcard)=>{
+  const flashcardRef = collection(db,'users',userId,'libraries',libraryId,'flashcards')
+  const docRef = await addDoc(flashcardRef,flashcard)
+}
+const addVocablist = async (userId,libraryId,vocab)=>{
+  const vocablistRef = collection(db,'users',userId,'libraries',libraryId,'vocablist')
+  const docRef = await addDoc(vocablistRef,vocab)
+}
 // -------------------------------flashcards------------------------------------
 const categories = {
   animals: [
@@ -121,8 +128,8 @@ const learningSection = document.getElementById('learning-tools')
 
 // ----------------------login.signup part----------------------------
 
-   const navBar = document.getElementById('nav-library')
-   navBar.style.display='none'
+const navBar = document.getElementById('nav-library')
+navBar.style.display='none'
 
 const login  = document.getElementById('login-section')
 login.style.display=' block'
@@ -306,7 +313,7 @@ prevBtn.addEventListener('click',()=>{
   }
 })
 // actegoried for our flashcards
-    const categoryButtons = ["animals", "fruits", "food", "colors", "numbers", "nouns"];
+const categoryButtons = ["animals", "fruits", "food", "colors", "numbers", "nouns"];
 categoryButtons.forEach(category=>{
     const btn = document.getElementById(`btn-${category}`)
     if (!btn) {
@@ -483,6 +490,10 @@ createNewLibrary.addEventListener('click',(e)=>{
     
     const addFlashCard = document.getElementById('add-flashcard-btn')
     const flashCardSection=document.getElementById('custom-flashcard-section')
+     const formWord = document.getElementById('custom-word')
+ const formMeaning = document.getElementById('custom-meaning')
+ const formImage= document.getElementById('custom-image')
+ 
    
    
     libraryListParent.addEventListener('click', (e) => {
@@ -529,10 +540,8 @@ OpenFlashCardSection.addEventListener('click',(e)=>{
 
 
 })
- const formWord = document.getElementById('custom-word')
- const formMeaning = document.getElementById('custom-meaning')
- const formImage= document.getElementById('custom-image')
- 
+
+
 saveFlashCard.addEventListener('click',(e)=>{
   e.preventDefault()
     addFlashCardForm.style.display = 'none'
@@ -570,6 +579,8 @@ saveFlashCard.addEventListener('click',(e)=>{
   formMeaning.value = "";
   formImage.value = "";
 })
+  function renderFlashcard(flashcard){}
+
 function renderCustomerFlashCard(libraryName){
   const flashCardContainer = document.getElementById('custom-flashcards')
 
