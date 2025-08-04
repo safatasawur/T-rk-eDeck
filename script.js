@@ -397,17 +397,15 @@ createNewLibrary.addEventListener('click',(e)=>{
  })
 
  function renderLibrary(nameOfLibrary){
-   if (namesLibrary.has(nameOfLibrary)){
+   if (namesLibrary.has(nameOfLibrary)) return 
         
-        alert("Library with same name exist") 
-            return
-        }
+        
+            
+        
  
             //  console.log(li.classList)
-       if (nameOfLibrary.trim() === "") {
-         alert("Please enter a library name");
-         return;}
-               
+       
+         if (nameOfLibrary.trim() === "")  return    
          const li = document.createElement('li')
         li.textContent = nameOfLibrary;
         namesLibrary.add(nameOfLibrary)
@@ -435,6 +433,9 @@ createNewLibrary.addEventListener('click',(e)=>{
       createLibrary.addEventListener('click',async(e)=>{
       e.preventDefault()
       const nameOfLibrary= libraryNameInput.value
+      if (nameOfLibrary.trim() === "") {
+         alert("Please enter a library name");
+         return;}
       // const li = document.createElement('li')
       //  li.classList.add('user-Library')
       //  li.setAttribute("data-name", nameOfLibrary);
