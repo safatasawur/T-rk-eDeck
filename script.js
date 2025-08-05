@@ -25,8 +25,9 @@ const addFlashCards = async (userId,libraryId,flashcard)=>{
   
 }
 const addVocablist = async (userId,libraryId,vocab)=>{
-  const vocablistRef = collection(db,'users',userId,'libraries',libraryId,'vocablist')
+  const vocablistRef = collection(db,'users',userId,'libraries',libraryId,'vocabList')
   const docRef = await addDoc(vocablistRef,vocab)
+  return docRef.id 
 }
 // -------------------------------flashcards------------------------------------
 const categories = {
@@ -266,6 +267,7 @@ function loadCategory(categoryName){
     renderCard()
 }
 function renderCard(){
+    // FlashCardSection.style.display ='block'
     const card = currentCards[currentIndex]
     wordEl.textContent = card.word
     meaningEl.textContent= card.meaning
@@ -344,7 +346,7 @@ quizTool.addEventListener('click',(e)=>{
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
     hideAllSections();
-    document.getElementById('flashcard-section').style.display = 'block';
+    FlashCardSection.style.display = 'block';
 });
 navLibrary.addEventListener('click', (e) => {
     e.preventDefault();
@@ -377,7 +379,7 @@ createNewLibrary.addEventListener('click',(e)=>{
     formInput.value=""
     newLibraryForm.style.display = "none"
  })
- async function createaLibrary(nameOfLibrary) {
+ async function createALibrary(nameOfLibrary) {
   if (namesLibrary.has(nameOfLibrary)) return;
   if (nameOfLibrary.trim() === "") return;
 
@@ -458,7 +460,6 @@ createNewLibrary.addEventListener('click',(e)=>{
   const formWord = document.getElementById('custom-word')
  const formMeaning = document.getElementById('custom-meaning')
  const formImage= document.getElementById('custom-image')
-     const cardData ={}
 
  
    
@@ -474,8 +475,16 @@ createNewLibrary.addEventListener('click',(e)=>{
     
     
     if (selectedLibraryName && userLibraries[selectedLibraryName]) {
-    await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id);
+    await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id)
+     await loadVocab(user.uid, userLibraries[selectedLibraryName].id)
+     vocabBody.innerHTML = '';
+     const vocabList = userLibraries[selectedLibraryName]?.vocabList || [];
+vocabList.forEach(vocab => {
+  renderVocab(selectedLibraryName, vocab);
+});
+    
    } 
+   
 // else {
 //     console.error("Library not found:", selectedLibraryName);
 // }
@@ -523,33 +532,18 @@ OpenFlashCardSection.addEventListener('click',(e)=>{
 
 saveFlashCard.addEventListener('click',async (e)=>{
   e.preventDefault()
-  //   addFlashCardForm.style.display = 'none'
-  //   if (!selectedLibraryName) {
-  //  alert("Please select a library first!");
-  //  return;
   
-// }
-
-  //  const Fword = formWord.value.trim()
-  //  const Fmeaning = formMeaning.value.trim()
-  //  const Fimage = formImage.files[0]
-  //  if (Fword=== "" || Fmeaning=== "" )
-  //   {
-  //     alert("Please enter both word and meaning.");
-  //   return;}
-  //   const cardData ={ word: Fword,meaning:Fmeaning}
-  //   if (Fimage)
-  //   {cardData.imageURL = URL.createObjectURL(Fimage);}
-  //   addFlashCardForm.style.display = "none";
-  //    userLibraries[selectedLibraryName].flashcards.push(cardData)
-  //    console.log("Saved to:", selectedLibraryName, userLibraries[selectedLibraryName].flashcards);
-        renderFlashcard(selectedLibraryName)
 
       const user = auth.currentUser
       const libraryId = userLibraries[selectedLibraryName].id
-      await addFlashCards(user.uid,libraryId,cardData)
-      // renderFlashcard(selectedLibraryName)
-      // console.log(userLibraries);
+     const newCard = renderFlashcard(selectedLibraryName); // ✅ get the latest card
+
+  if (!newCard) return; // something went wrong
+
+  await addFlashCards(user.uid, libraryId, newCard); // ✅ only save this one
+
+  
+    
       renderCustomerFlashCard(selectedLibraryName) 
 
  
@@ -586,8 +580,13 @@ console.log(`Loaded flashcards for ${libname}:`, userLibraries[libname].flashcar
     return;}
     // const cardData ={ word: Fword,meaning:Fmeaning}
     // const cardData ={}
-    cardData['word'] = Fword
-    cardData['meaning'] = Fmeaning
+         const cardData ={
+          word : Fword,
+          meaning : Fmeaning
+         }
+
+    // cardData['word'] = Fword
+    // cardData['meaning'] = Fmeaning
     console.log(cardData);
     
     if (Fimage)
@@ -600,6 +599,7 @@ console.log(`Loaded flashcards for ${libname}:`, userLibraries[libname].flashcar
     formWord.value = "";
   formMeaning.value = "";
   formImage.value = "";
+  return cardData
   }
 
 function renderCustomerFlashCard(libraryName){
@@ -631,6 +631,7 @@ function renderCustomerFlashCard(libraryName){
   const vocabWord = document.getElementById('vocab-word')
   const vocabMeaning = document.getElementById('vocab-meaning')
   const vocabBody = document.getElementById('vocab-body')
+  // const vocab = {}
   
   vocabHeading.addEventListener('click',(e)=>{
     customLibrarySection.style.display ='none'
@@ -651,21 +652,36 @@ function renderCustomerFlashCard(libraryName){
    saveVocabBtn.addEventListener('click',(e)=>{
       vocabForm.style.display ='none'
    })
-vocabForm.addEventListener('submit', function (e) {
+vocabForm.addEventListener('submit', async  (e)=>{
   e.preventDefault(); // prevent form reload
+  const Vword = vocabWord.value.trim();
+  const Vmeaning = vocabMeaning.value.trim();
+  if (Vword === '' || Vmeaning === '') return;
 
-  const word = vocabWord.value.trim();
-  const meaning = vocabMeaning.value.trim();
+  const vocab = {
+    word: Vword,
+    meaning: Vmeaning
+  };
 
-  if (word === '' || meaning === '') return;
+      const user = auth.currentUser
+      const libraryId = userLibraries[selectedLibraryName].id
+      await addVocablist(user.uid,libraryId,vocab)
+             renderVocab(selectedLibraryName,vocab)
 
-  // Create table row
+ 
+});
+function renderVocab (selectedLibraryName,vocab){
+      if (!selectedLibraryName) return;
+
+  
+    userLibraries[selectedLibraryName].vocabList.push(vocab)
+ 
   const row = document.createElement('tr');
 
   // Create columns
   row.innerHTML = `
-    <td>${word}</td>
-    <td>${meaning}</td>
+    <td>${vocab.word}</td>
+    <td>${vocab.meaning}</td>
     <td>
       <button class="delete-btn">Delete</button>
     </td>
@@ -677,15 +693,33 @@ vocabForm.addEventListener('submit', function (e) {
   vocabWord.value = '';
   vocabMeaning.value = '';
   vocabForm.style.display = 'none';
-});
+}
+const  loadVocab = async (userId,libId)=>{
+  const vocabRef = collection(db,"users",userId,"libraries",libId,"vocabList")
+  const snapshot = await getDocs(vocabRef)
+  const libname = Object.keys(userLibraries).find(name=>userLibraries[name].id === libId)
+  if (!libname) return
+  userLibraries[libname].vocablist = [];
+  snapshot.forEach((doc)=>{
+    const data = doc.data()
+    userLibraries[libname].vocabList.push(data)
+        renderVocab(libname,data)
+
+  })
+console.log(`Loaded Vocab List  for ${libname}:`, userLibraries[libname].vocabList);
+
+ 
 
 
+}
 vocabBody.addEventListener('click', function (e) {
   if (e.target.classList.contains('delete-btn')) {
     const row = e.target.closest('tr');
     row.remove();
   }
 })
+
+// -----------------------------------------------MAIN FUNCTIONS-----------------------------
 function hideAllSections() {
     const sections = document.querySelectorAll('section');
     sections.forEach(section => {
