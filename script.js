@@ -115,7 +115,10 @@ const categories = {
 ]
 
 };
+// ----------------------------quiz-------------------------------------
+const quizSection = document.getElementById('quiz-section')
 
+// -----------------------------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
   hideAllSections();
@@ -436,8 +439,21 @@ createNewLibrary.addEventListener('click',(e)=>{
       const user = auth.currentUser
 
      await addLibrary(user.uid, nameOfLibrary)
-          renderLibrary(nameOfLibrary)
+          renderTheLibrary(nameOfLibrary)
 
+        const presentFlashcard = userLibraries[nameOfLibrary].flashcards
+     console.log('flashcras',presentFlashcard);
+     
+    //  const presentVocablist = userLibraries[currentLibName].vocabList
+    //  console.log(presentVocablist);
+    //  const quizarray =[]
+    //   for ( let flashObj of presentFlashcard){
+    //     quizarray.push(flashObj)
+    //   }
+    //   for ( let vocabObj of presentVocablist){
+    //     quizarray.push(vocabObj)
+    //   }
+    // console.log(quizarray);
       console.log("Clicked createLibrary");
      console.log("Library name:", nameOfLibrary);
      console.log("Current user:", user?.uid);
@@ -525,6 +541,7 @@ OpenFlashCardSection.addEventListener('click',(e)=>{
   addFlashCardForm.style.display ='none'
   flashCardSection.style.display = 'block'
   customLibrarySection.style.display ='none'
+  addFlashCard.style.display='block'
 
 
 })
@@ -689,7 +706,6 @@ function renderVocab (selectedLibraryName,vocab){
 
   vocabBody.appendChild(row);
 
-  // Clear input fields
   vocabWord.value = '';
   vocabMeaning.value = '';
   vocabForm.style.display = 'none';
@@ -699,7 +715,7 @@ const  loadVocab = async (userId,libId)=>{
   const snapshot = await getDocs(vocabRef)
   const libname = Object.keys(userLibraries).find(name=>userLibraries[name].id === libId)
   if (!libname) return
-  userLibraries[libname].vocablist = [];
+  // userLibraries[libname].vocablist = [];
   snapshot.forEach((doc)=>{
     const data = doc.data()
     userLibraries[libname].vocabList.push(data)
@@ -717,6 +733,45 @@ vocabBody.addEventListener('click', function (e) {
     const row = e.target.closest('tr');
     row.remove();
   }
+})
+// -------------------------------------QUIZ--------------------------------------------------------------
+let score = 0;
+const takeQuizBtn = document.getElementById('takeQuiz-btn')
+const quizLibraryName = document.getElementById('quiz-library-name')
+takeQuizBtn.addEventListener('click',(e)=>{
+  hideAllSections()
+  quizSection.style.display='block'
+})
+libraryListParent.addEventListener('click',(e)=>{
+  e.preventDefault()
+    if (e.target.classList.contains('user-Library')) {
+   const  currentLibName = e.target.getAttribute('data-name');
+    console.log(currentLibName);
+    quizLibraryName.textContent=  currentLibName
+    console.log(userLibraries[currentLibName]);
+    // console.log(Object.keys(userLibraries[currentLibName]));
+console.log('LIB NAME:', currentLibName);
+console.log('ALL LIBRARY KEYS:', Object.keys(userLibraries));
+
+    // console.log(userLibraries[currentLibName].flashcards);
+//   
+
+    //  const presentFlashcard = userLibraries[currentLibName].flashcards
+    //  console.log(presentFlashcard);
+     
+    //  const presentVocablist = userLibraries[currentLibName].vocabList
+    //  console.log(presentVocablist);
+    //  const quizarray =[]
+    //   for ( let flashObj of presentFlashcard){
+    //     quizarray.push(flashObj)
+    //   }
+    //   for ( let vocabObj of presentVocablist){
+    //     quizarray.push(vocabObj)
+    //   }
+    // console.log(quizarray);
+    
+}
+
 })
 
 // -----------------------------------------------MAIN FUNCTIONS-----------------------------

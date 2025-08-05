@@ -269,6 +269,7 @@
   <div class="customsection-btns">
      <button id="btn-add-flashcard"> Flashcards</button>
    <button  id="Vocablist-heading">Your Vocabulary List</button>
+   <button  id="takeQuiz-btn">Take quiz</button>
   </div>
  
   <!-- SECTION FOR FLASHCARDS -->
@@ -300,6 +301,28 @@
   <!-- Custom flashcards area -->
   <div id="custom-flashcards"></div>
     </section>
+    <section id="quiz-section">
+    <div class="quiz-container">
+    <h2 class="quiz-title">Quiz Time!</h2>
+    <p class="quiz-library-name">Library: <span id="quiz-library-name">My Library</span></p>
+    <p class="quiz-progress">Question <span id="quiz-current">1</span> of <span id="quiz-total">10</span></p>
+
+    <div class="quiz-question">
+      <h3 id="quiz-word">Placeholder Word</h3>
+    </div>
+
+    <div class="quiz-options">
+      <button class="quiz-option">Option 1</button>
+      <button class="quiz-option">Option 2</button>
+      <button class="quiz-option">Option 3</button>
+      <button class="quiz-option">Option 4</button>
+    </div>
+
+    <p id="quiz-feedback" class="quiz-feedback hidden">Correct!</p>
+
+    <button id="next-question-btn" class="next-btn hidden ">Next</button>
+  </div>
+  </section>
   
     <section id="vocab-section">
     <div id="back-arrow2" style="cursor: pointer; display: flex; align-items: center; gap: 6px;" class="arrow">
@@ -340,8 +363,14 @@
       <div>
       <h4>Follow Us</h4>
       <div class="social-icons">
-        <a href="#"><img src="/icons/twitter.svg" alt="Twitter"></a>
-        <a href="#"><img src="/icons/instagram.svg" alt="Instagram"></a>
+       <!-- Twitter Icon -->
+<i class="fab fa-twitter"></i>
+
+<!-- Instagram Icon -->
+<i class="fab fa-instagram"></i>
+
+
+<i class="fab fa-facebook-f"></i>
       </div>
     </div>
     <div class="contact">
