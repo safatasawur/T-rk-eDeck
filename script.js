@@ -377,17 +377,22 @@ createNewLibrary.addEventListener('click',(e)=>{
     formInput.value=""
     newLibraryForm.style.display = "none"
  })
+ async function createaLibrary(nameOfLibrary) {
+  if (namesLibrary.has(nameOfLibrary)) return;
+  if (nameOfLibrary.trim() === "") return;
 
- async function renderLibrary(nameOfLibrary){
+  const user = auth.currentUser;
+  const libId = await addLibrary(user.uid, nameOfLibrary);
+  if (!libId) return;
+
+  renderTheLibrary(nameOfLibrary, libId);
+}
+
+ async function renderTheLibrary(nameOfLibrary,libId){
    if (namesLibrary.has(nameOfLibrary)) return 
-        
-    
-            
-        
- 
-            //  console.log(li.classList)
-       
-         if (nameOfLibrary.trim() === "")  return    
+     if (nameOfLibrary.trim() === "") return;
+
+   
           const li = document.createElement('li')
         li.textContent = nameOfLibrary;
         namesLibrary.add(nameOfLibrary)
@@ -397,10 +402,7 @@ createNewLibrary.addEventListener('click',(e)=>{
         
      libraryNameInput.value=""
      newLibraryForm.style.display = "none"
-     const user = auth.currentUser
-
-    const libId =  await addLibrary(user.uid, nameOfLibrary)
-    if (!libId) return;
+    
    
        if (!userLibraries[nameOfLibrary]){
      userLibraries[nameOfLibrary] ={ 
@@ -416,8 +418,9 @@ createNewLibrary.addEventListener('click',(e)=>{
   snapshot.forEach((doc)=>{
     const data = doc.data()
     const name = data.name
-    renderLibrary(name)
-  })
+    const id = doc.id; // ✅ this is the Firestore document ID
+
+ renderTheLibrary(name, id);  })
  }
 
      const libraryListParent= document.querySelector('.library-li')
@@ -427,30 +430,7 @@ createNewLibrary.addEventListener('click',(e)=>{
       if (nameOfLibrary.trim() === "") {
          alert("Please enter a library name");
          return;}
-      // const li = document.createElement('li')
-      //  li.classList.add('user-Library')
-      //  li.setAttribute("data-name", nameOfLibrary);
-      //       //  console.log(li.classList)
-      //  if (nameOfLibrary.trim() === "") {
-      //    alert("Please enter a library name");
-      //    return;}
-
-      //   if (namesLibrary.has(nameOfLibrary)){
-        
-      //   alert("Library with same name exist") 
-      //       return
-      //   }
-      //   li.textContent = nameOfLibrary;
-      //   namesLibrary.add(nameOfLibrary)
-     
-    
-    //  libraryListParent.appendChild(li)
-    //  libraryNameInput.value=""
-    //  newLibraryForm.style.display = "none"
-    //  userLibraries[nameOfLibrary] ={ 
-    //   flashcards: [],
-    //   vocabList: []}
-    //  console.log(userLibraries);
+   
       const user = auth.currentUser
 
      await addLibrary(user.uid, nameOfLibrary)
@@ -471,11 +451,11 @@ createNewLibrary.addEventListener('click',(e)=>{
    const OpenFlashCardSection = document.getElementById('btn-add-flashcard')
    const addFlashCardForm = document.getElementById('add-flashcard-form')
    const saveFlashCard = document.getElementById('save-flashcard')
-    const noContentText = document.getElementById('no-content-msg')
+  const noContentText = document.getElementById('no-content-msg')
     
-    const addFlashCard = document.getElementById('add-flashcard-btn')
-    const flashCardSection=document.getElementById('custom-flashcard-section')
-     const formWord = document.getElementById('custom-word')
+  const addFlashCard = document.getElementById('add-flashcard-btn')
+  const flashCardSection=document.getElementById('custom-flashcard-section')
+  const formWord = document.getElementById('custom-word')
  const formMeaning = document.getElementById('custom-meaning')
  const formImage= document.getElementById('custom-image')
      const cardData ={}
@@ -483,17 +463,23 @@ createNewLibrary.addEventListener('click',(e)=>{
  
    
    
-    libraryListParent.addEventListener('click', (e) => {
+    libraryListParent.addEventListener('click', async(e) => {
     if (e.target.classList.contains('user-Library')) {
     selectedLibraryName = e.target.getAttribute('data-name');
     document.getElementById('create-library-section').style.display = 'none';
     const user = auth.currentUser
-    console.log(userLibraries[selectedLibraryName]);
+    console.log('selected libarary :',userLibraries[selectedLibraryName]);
+    console.log('selected lib name ',selectedLibraryName);
+    console.log('user libraray obj :',userLibraries);
     
-    // const libId=  userLibraries[selectedLibraryName].id
-    // console.log(userLibraries[selectedLibraryName].id);
     
-     loadFlashCard(user.uid,userLibraries[selectedLibraryName].id)
+    if (selectedLibraryName && userLibraries[selectedLibraryName]) {
+    await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id);
+   } 
+// else {
+//     console.error("Library not found:", selectedLibraryName);
+// }
+ 
    
     customLibrarySection.style.display = 'block';
     librarySection.style.display ="none"
@@ -581,9 +567,11 @@ saveFlashCard.addEventListener('click',async (e)=>{
   userLibraries[libname].flashcards = [];
   snapshot.forEach((doc)=>{
     const data = doc.data()
-    userLibraries[libname].flashcard.push(data)
+    userLibraries[libname].flashcards.push(data)
+    
   })
       renderCustomerFlashCard(libname)
+console.log(`Loaded flashcards for ${libname}:`, userLibraries[libname].flashcards);
 
  }
   function renderFlashcard(selectedLibrary){
