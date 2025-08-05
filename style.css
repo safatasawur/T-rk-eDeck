@@ -130,6 +130,12 @@ nav ul li a:hover {
   color: #e67e22; /* orange on hover */
   cursor: pointer;
 }
+#nav-profile{
+  font-size: 1.5rem;
+  transition: color 0.17s ease-in-out;
+}
+#nav-profile:hover{color: #e67e22;
+cursor: pointer;}
 
 
 /* Flashcard container */
@@ -749,85 +755,7 @@ section {
   text-align: right; /* Align image to the right */
   padding-left: 50px; /* Push it further to the right */
 }
-/* #slider-section{
-  height: 60vh;
- margin-top: 5px;
-}
-.infinite-slider-section {
-  overflow: hidden;
-  background: #000; 
-  padding: 30px 0px;
-  border-top: 1px solid #222;
-  border-bottom: 1px solid #222;
-}
 
-
-.slider-track {
-  margin-top: 15px;
-  display: flex;
-  width: calc(450px * 10); 
-  animation: scroll 25s linear infinite;
-}
-
-
-.slide {
-  flex: 0 0 450px;
-  height: 300px;
-  background-color: #111;
-  color: #fff;
-  font-size: 1.1rem;
-  
-  border-radius: 20px;
-  margin: 0 15px;
-  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.05), 
-              0 5px 10px rgba(230, 126, 34, 0.6);
-  display: flex; 
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px 20px;
-  transition: transform 0.3s ease;
-  gap: 10px;
-}
-
-.slide:hover {
-  transform: translateY(-6px);
-}
-
-
-.slide-text {
-  flex: 1;
-  text-align: left;
-  font-size: 1rem;
-}
-
-
- .slide-svg {
-      flex: 1;
-      max-width: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .slide-svg img {
-  width: 100%;
-  height: auto;
-  max-height: 90%;
-  object-fit: contain;
-  transform: scale(1.3); /
-} 
-  .slide-svg {
-    width: 100%;
-    height: 60px;
-          max-width: 50%;
-
-  }
-  
-  .slide-svg img {
-    height: auto;
-    width: 100%;
-  } */
   #slider-section {
   height: 50vh;
   margin-top: 5px;
@@ -955,13 +883,7 @@ section {
   border-radius: 12px;
 }
 
-/* SVG or Image */
-/* .tool-img {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin: 30px auto 20px;
-} */
+
  .tool-video {
   width: 70%;
   height: auto;
@@ -991,7 +913,7 @@ section {
   .footer {
   background: #1a1a1a;
   color: #f0f0f0;
-  padding: 40px 20px;
+  padding: 20px 20px;
 }
 .footer-grid {
   display: flex;
@@ -1023,7 +945,14 @@ section {
 }
 .footer-bottom {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 20px;
   font-size: 0.85rem;
   color: #888;
+}
+footer .contact p{
+  color:#ffa500;
+  cursor : pointer;
+}
+footer .contact p:hover {
+  text-decoration: underline;
 }

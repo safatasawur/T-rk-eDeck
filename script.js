@@ -21,6 +21,8 @@ catch(error){console.log('some error',error)}
 const addFlashCards = async (userId,libraryId,flashcard)=>{
   const flashcardRef = collection(db,'users',userId,'libraries',libraryId,'flashcards')
   const docRef = await addDoc(flashcardRef,flashcard)
+  console.log(flashcard);
+  
 }
 const addVocablist = async (userId,libraryId,vocab)=>{
   const vocablistRef = collection(db,'users',userId,'libraries',libraryId,'vocablist')
@@ -228,34 +230,7 @@ showSection(login)
 
 
 
-// const auth = getAuth();
 
-// This runs whenever the page loads
-onAuthStateChanged(auth, async(user) => {
-  if (user) {
-    // ✅ User is signed in, you can show the logged-in UI
-    console.log("User is logged in:", user.email,user);
-
-    // Example: Show library section or home page
-    login.style.display = 'none';
-    mainHome.style.display = 'block';
-    navBar.style.display='block'
-    sliderSection.style.display ='block'
-    learningSection.style.display ='block'
-
-    nameOfUser.textContent = user.displayName || 'anonymus'
-    emailOfUser.textContent = user.email;
-   await  loadLibrary(user.uid)
-
-  } else {
-    // ❌ No user is signed in, show login page
-    console.log("No user is logged in");
-
-    login.style.display = 'block';
-    mainHome.style.display = 'none';
-    navBar.style.display='none'
-  }
-});
 logoutBtn.addEventListener('click',(e)=>{
   signOut(auth).then (()=>{
     console.log("user logged out ");
@@ -403,17 +378,17 @@ createNewLibrary.addEventListener('click',(e)=>{
     newLibraryForm.style.display = "none"
  })
 
- function renderLibrary(nameOfLibrary){
+ async function renderLibrary(nameOfLibrary){
    if (namesLibrary.has(nameOfLibrary)) return 
         
-        
+    
             
         
  
             //  console.log(li.classList)
        
          if (nameOfLibrary.trim() === "")  return    
-         const li = document.createElement('li')
+          const li = document.createElement('li')
         li.textContent = nameOfLibrary;
         namesLibrary.add(nameOfLibrary)
          li.classList.add('user-Library')
@@ -422,10 +397,18 @@ createNewLibrary.addEventListener('click',(e)=>{
         
      libraryNameInput.value=""
      newLibraryForm.style.display = "none"
+     const user = auth.currentUser
+
+    const libId =  await addLibrary(user.uid, nameOfLibrary)
+    if (!libId) return;
+   
        if (!userLibraries[nameOfLibrary]){
      userLibraries[nameOfLibrary] ={ 
+       id: libId,
       flashcards: [],
       vocabList: []}}
+      console.log(userLibraries[nameOfLibrary].id);
+      
  }
  const loadLibrary = async (userId)=>{
   const libRef = collection(db,'users',userId,'libraries')
@@ -436,6 +419,7 @@ createNewLibrary.addEventListener('click',(e)=>{
     renderLibrary(name)
   })
  }
+
      const libraryListParent= document.querySelector('.library-li')
       createLibrary.addEventListener('click',async(e)=>{
       e.preventDefault()
@@ -468,6 +452,7 @@ createNewLibrary.addEventListener('click',(e)=>{
     //   vocabList: []}
     //  console.log(userLibraries);
       const user = auth.currentUser
+
      await addLibrary(user.uid, nameOfLibrary)
           renderLibrary(nameOfLibrary)
 
@@ -493,6 +478,8 @@ createNewLibrary.addEventListener('click',(e)=>{
      const formWord = document.getElementById('custom-word')
  const formMeaning = document.getElementById('custom-meaning')
  const formImage= document.getElementById('custom-image')
+     const cardData ={}
+
  
    
    
@@ -500,7 +487,13 @@ createNewLibrary.addEventListener('click',(e)=>{
     if (e.target.classList.contains('user-Library')) {
     selectedLibraryName = e.target.getAttribute('data-name');
     document.getElementById('create-library-section').style.display = 'none';
-
+    const user = auth.currentUser
+    console.log(userLibraries[selectedLibraryName]);
+    
+    // const libId=  userLibraries[selectedLibraryName].id
+    // console.log(userLibraries[selectedLibraryName].id);
+    
+     loadFlashCard(user.uid,userLibraries[selectedLibraryName].id)
    
     customLibrarySection.style.display = 'block';
     librarySection.style.display ="none"
@@ -542,44 +535,84 @@ OpenFlashCardSection.addEventListener('click',(e)=>{
 })
 
 
-saveFlashCard.addEventListener('click',(e)=>{
+saveFlashCard.addEventListener('click',async (e)=>{
   e.preventDefault()
-    addFlashCardForm.style.display = 'none'
-
-  if (!selectedLibraryName) {
-  alert("Please select a library first!");
-  return;
+  //   addFlashCardForm.style.display = 'none'
+  //   if (!selectedLibraryName) {
+  //  alert("Please select a library first!");
+  //  return;
   
-}
+// }
 
-   const Fword = formWord.value.trim()
+  //  const Fword = formWord.value.trim()
+  //  const Fmeaning = formMeaning.value.trim()
+  //  const Fimage = formImage.files[0]
+  //  if (Fword=== "" || Fmeaning=== "" )
+  //   {
+  //     alert("Please enter both word and meaning.");
+  //   return;}
+  //   const cardData ={ word: Fword,meaning:Fmeaning}
+  //   if (Fimage)
+  //   {cardData.imageURL = URL.createObjectURL(Fimage);}
+  //   addFlashCardForm.style.display = "none";
+  //    userLibraries[selectedLibraryName].flashcards.push(cardData)
+  //    console.log("Saved to:", selectedLibraryName, userLibraries[selectedLibraryName].flashcards);
+        renderFlashcard(selectedLibraryName)
+
+      const user = auth.currentUser
+      const libraryId = userLibraries[selectedLibraryName].id
+      await addFlashCards(user.uid,libraryId,cardData)
+      // renderFlashcard(selectedLibraryName)
+      // console.log(userLibraries);
+      renderCustomerFlashCard(selectedLibraryName) 
+
+ 
+   
+
+//  formWord.value = "";
+//   formMeaning.value = "";
+//   formImage.value = "";
+})
+ const loadFlashCard = async (userId,libId)=>{
+  const flashRef = collection(db,'users',userId,'libraries',libId,'flashcards')
+  const snapshot = await getDocs(flashRef)
+  const libname = Object.keys(userLibraries).find(name=>userLibraries[name].id === libId)
+  if (!libname) return
+  userLibraries[libname].flashcards = [];
+  snapshot.forEach((doc)=>{
+    const data = doc.data()
+    userLibraries[libname].flashcard.push(data)
+  })
+      renderCustomerFlashCard(libname)
+
+ }
+  function renderFlashcard(selectedLibrary){
+    addFlashCardForm.style.display = 'none'
+    if (!selectedLibrary) return;
+     const Fword = formWord.value.trim()
    const Fmeaning = formMeaning.value.trim()
    const Fimage = formImage.files[0]
    if (Fword=== "" || Fmeaning=== "" )
     {
       alert("Please enter both word and meaning.");
     return;}
-    const cardData ={ word: Fword,meaning:Fmeaning}
+    // const cardData ={ word: Fword,meaning:Fmeaning}
+    // const cardData ={}
+    cardData['word'] = Fword
+    cardData['meaning'] = Fmeaning
+    console.log(cardData);
+    
     if (Fimage)
     {cardData.imageURL = URL.createObjectURL(Fimage);}
     addFlashCardForm.style.display = "none";
-     userLibraries[selectedLibraryName].flashcards.push(cardData)
-     console.log("Saved to:", selectedLibraryName, userLibraries[selectedLibraryName].flashcards);
+     userLibraries[selectedLibrary].flashcards.push(cardData)
+    //  console.log("Saved to:", selectedLibrary, userLibraries[selectedLibrary].flashcards);
 
      console.log(userLibraries);
-     
-
-     
-    renderCustomerFlashCard(selectedLibraryName) 
-
- 
-   
-
- formWord.value = "";
+    formWord.value = "";
   formMeaning.value = "";
   formImage.value = "";
-})
-  function renderFlashcard(flashcard){}
+  }
 
 function renderCustomerFlashCard(libraryName){
   const flashCardContainer = document.getElementById('custom-flashcards')
@@ -677,6 +710,33 @@ function showSection( section) {
   section.style.display = 'block';
 
 }
+onAuthStateChanged(auth, async(user) => {
+  if (user) {
+    // ✅ User is signed in, you can show the logged-in UI
+    console.log("User is logged in:", user.email,user);
+
+    // Example: Show library section or home page
+    login.style.display = 'none';
+    mainHome.style.display = 'block';
+    navBar.style.display='block'
+    sliderSection.style.display ='block'
+    learningSection.style.display ='block'
+
+    nameOfUser.textContent = user.displayName || 'anonymus'
+    emailOfUser.textContent = user.email;
+   await  loadLibrary(user.uid)
+    //      const libraryId = userLibraries[selectedLibraryName].id
+    // await loadFlashCard(user.uid, libraryId)
+
+  } else {
+    // ❌ No user is signed in, show login page
+    console.log("No user is logged in");
+
+    login.style.display = 'block';
+    mainHome.style.display = 'none';
+    navBar.style.display='none'
+  }
+});
 })
 
 
