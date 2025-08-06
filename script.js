@@ -117,6 +117,15 @@ const categories = {
 };
 // ----------------------------quiz-------------------------------------
 const quizSection = document.getElementById('quiz-section')
+function shuffle(array ){
+   for (let i= array.length -1; i>0;i--){
+     const j = Math.floor(Math.random()* (i+1))
+     const temp = array[i]
+     array[i]=array[j]
+     array[j]=temp
+  }
+  return array
+}
 
 // -----------------------------------------------
 
@@ -439,20 +448,9 @@ createNewLibrary.addEventListener('click',(e)=>{
       const user = auth.currentUser
 
      await addLibrary(user.uid, nameOfLibrary)
-          renderTheLibrary(nameOfLibrary)
+      await    renderTheLibrary(nameOfLibrary)
 
-        const presentFlashcard = userLibraries[nameOfLibrary].flashcards
-     console.log('flashcras',presentFlashcard);
-     
-    //  const presentVocablist = userLibraries[currentLibName].vocabList
-    //  console.log(presentVocablist);
-    //  const quizarray =[]
-    //   for ( let flashObj of presentFlashcard){
-    //     quizarray.push(flashObj)
-    //   }
-    //   for ( let vocabObj of presentVocablist){
-    //     quizarray.push(vocabObj)
-    //   }
+   
     // console.log(quizarray);
       console.log("Clicked createLibrary");
      console.log("Library name:", nameOfLibrary);
@@ -493,26 +491,40 @@ createNewLibrary.addEventListener('click',(e)=>{
     if (selectedLibraryName && userLibraries[selectedLibraryName]) {
     await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id)
      await loadVocab(user.uid, userLibraries[selectedLibraryName].id)
-     vocabBody.innerHTML = '';
-     const vocabList = userLibraries[selectedLibraryName]?.vocabList || [];
-vocabList.forEach(vocab => {
-  renderVocab(selectedLibraryName, vocab);
-});
+//      vocabBody.innerHTML = '';
+//      const vocabList = userLibraries[selectedLibraryName]?.vocabList || [];
+// for (const vocab of vocabList) {
+//   await renderVocab(selectedLibraryName, vocab);
+// }
+  const presentFlashcard = userLibraries[selectedLibraryName].flashcards
+     console.log('flashcards',presentFlashcard);
+  const presentVocablist = userLibraries[selectedLibraryName].vocabList
+     console.log('present vocab list',presentVocablist);
+     const quizarray =[]
+      for ( let flashObj of presentFlashcard){
+        quizarray.push(flashObj)
+      }
+      for ( let vocabObj of presentVocablist){
+        quizarray.push(vocabObj)
+      }
+    console.log(quizarray);
+ 
+   const shuffled = shuffle(quizarray);
+    console.log(shuffled);
+
+};
+    
     
    } 
    
-// else {
-//     console.error("Library not found:", selectedLibraryName);
-// }
- 
-   
-    customLibrarySection.style.display = 'block';
+
+ customLibrarySection.style.display = 'block';
     librarySection.style.display ="none"
     customLibraryTitle.textContent = selectedLibraryName
     console.log('you opened the library :',selectedLibraryName);
     renderCustomerFlashCard(selectedLibraryName);
     librarySection.style.display="none"
-  }
+  
 });
 addFlashCard.addEventListener('click',(e)=>{
   e.preventDefault();
@@ -684,14 +696,17 @@ vocabForm.addEventListener('submit', async  (e)=>{
       const libraryId = userLibraries[selectedLibraryName].id
       await addVocablist(user.uid,libraryId,vocab)
              renderVocab(selectedLibraryName,vocab)
+                 userLibraries[selectedLibraryName].vocabList.push(vocab)
+console.log('voacba list after reloading : ',userLibraries[selectedLibraryName].vocabList);
+
 
  
 });
-function renderVocab (selectedLibraryName,vocab){
+const  renderVocab = async (selectedLibraryName,vocab)=>{
       if (!selectedLibraryName) return;
 
   
-    userLibraries[selectedLibraryName].vocabList.push(vocab)
+    // userLibraries[selectedLibraryName].vocabList.push(vocab)
  
   const row = document.createElement('tr');
 
@@ -715,7 +730,7 @@ const  loadVocab = async (userId,libId)=>{
   const snapshot = await getDocs(vocabRef)
   const libname = Object.keys(userLibraries).find(name=>userLibraries[name].id === libId)
   if (!libname) return
-  // userLibraries[libname].vocablist = [];
+  userLibraries[libname].vocablist = [];
   snapshot.forEach((doc)=>{
     const data = doc.data()
     userLibraries[libname].vocabList.push(data)
@@ -748,31 +763,19 @@ libraryListParent.addEventListener('click',(e)=>{
    const  currentLibName = e.target.getAttribute('data-name');
     console.log(currentLibName);
     quizLibraryName.textContent=  currentLibName
-    console.log(userLibraries[currentLibName]);
-    // console.log(Object.keys(userLibraries[currentLibName]));
-console.log('LIB NAME:', currentLibName);
-console.log('ALL LIBRARY KEYS:', Object.keys(userLibraries));
 
-    // console.log(userLibraries[currentLibName].flashcards);
-//   
-
-    //  const presentFlashcard = userLibraries[currentLibName].flashcards
-    //  console.log(presentFlashcard);
-     
-    //  const presentVocablist = userLibraries[currentLibName].vocabList
-    //  console.log(presentVocablist);
-    //  const quizarray =[]
-    //   for ( let flashObj of presentFlashcard){
-    //     quizarray.push(flashObj)
-    //   }
-    //   for ( let vocabObj of presentVocablist){
-    //     quizarray.push(vocabObj)
-    //   }
-    // console.log(quizarray);
     
 }
 
+
 })
+// function shuffle(array ){
+//    for (let i= array.length -1; i>0;i--){
+//      const j = Math.floor(Math.random()* (i+1))
+//       [array[i],array[j]] = [array[j],array[i]]
+//   }
+//   return array
+// }
 
 // -----------------------------------------------MAIN FUNCTIONS-----------------------------
 function hideAllSections() {
