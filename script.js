@@ -127,10 +127,6 @@ function shuffle(array ){
   }
   return shuffled
 }
-// const num = [1,3,4,6,7]
-// console.log('orginal ',num);
-// const anwe=shuffle(num)
-// console.log('shuffle',anwe);
 
 
 // -----------------------------------------------
@@ -486,7 +482,7 @@ createNewLibrary.addEventListener('click',(e)=>{
  const loadedLibraries = new Set();
 
 //  ----------------------------QUIZ RELATED VARIABLE--------------
- let quizarray = null
+ let quizarray = []
  let currentQuizIndex = null;
    let correctAnswer = null
 
@@ -504,7 +500,6 @@ let usedIndices = new Set()
    
     libraryListParent.addEventListener('click', async(e) => {
     if (e.target.classList.contains('user-Library')) {
-      quizarray=[]
     selectedLibraryName = e.target.getAttribute('data-name');
     document.getElementById('create-library-section').style.display = 'none';
     const user = auth.currentUser
@@ -529,21 +524,17 @@ let usedIndices = new Set()
       ;
       }
       
-          // renderCustomerFlashCard(selectedLibraryName);
-
-          
-    
-  // const presentFlashcard = userLibraries[selectedLibraryName].flashcards
-  //    console.log('flashcards',presentFlashcard);
-  // const presentVocablist = userLibraries[selectedLibraryName].vocabList
-  //    console.log('present vocab list',presentVocablist);
-  //    quizarray =[]
-  //     for ( let flashObj of presentFlashcard){
-  //       quizarray.push(flashObj)
-  //     }
-  //     for ( let vocabObj of presentVocablist){
-  //       quizarray.push(vocabObj)
-  //     }
+        const presentFlashcard = userLibraries[selectedLibraryName].flashcards
+     console.log('flashcards',presentFlashcard);
+  const presentVocablist = userLibraries[selectedLibraryName].vocabList
+     console.log('present vocab list',presentVocablist);
+     quizarray =[]
+      for ( let flashObj of presentFlashcard){
+        quizarray.push(flashObj)
+      }
+      for ( let vocabObj of presentVocablist){
+        quizarray.push(vocabObj)
+      }  
     console.log(quizarray);
  
    const shuffledQuizArray = shuffle(quizarray);
@@ -718,7 +709,7 @@ saveFlashCard.addEventListener('click',async (e)=>{
   if (!newCard) return; // something went wrong
 
   await addFlashCards(user.uid, libraryId, newCard); // ✅ only save this one
-       
+      //  await loadFlashCard (user.uid,libraryId)
   
     
       renderCustomerFlashCard(selectedLibraryName) 
@@ -739,7 +730,7 @@ saveFlashCard.addEventListener('click',async (e)=>{
   snapshot.forEach((doc)=>{
     const data = doc.data()
     userLibraries[libname].flashcards.push(data)
-    quizarray.push(data)
+   
     
   })
   console.log('quiz array flashcard updtaed',quizarray);
@@ -773,6 +764,8 @@ console.log(`Loaded flashcards for ${libname}:`, userLibraries[libname].flashcar
     {cardData.imageURL = URL.createObjectURL(Fimage);}
     addFlashCardForm.style.display = "none";
      userLibraries[selectedLibrary].flashcards.push(cardData)
+      quizarray.push(cardData)
+                 console.log('updated quizarrayw ith flascrad ', quizarray);
     //  console.log("Saved to:", selectedLibrary, userLibraries[selectedLibrary].flashcards);
 
      console.log(userLibraries);
@@ -848,6 +841,9 @@ vocabForm.addEventListener('submit', async  (e)=>{
       await addVocablist(user.uid,libraryId,vocab)
              renderVocab(selectedLibraryName,vocab)
                  userLibraries[selectedLibraryName].vocabList.push(vocab)
+                 quizarray.push(vocab)
+                 console.log('updated quizarrayw ith voacb ', quizarray);
+                 
 console.log('voacba list after reloading : ',userLibraries[selectedLibraryName].vocabList);
 
 
@@ -885,7 +881,7 @@ const  loadVocab = async (userId,libId)=>{
   snapshot.forEach((doc)=>{
     const data = doc.data()
     userLibraries[libname].vocabList.push(data)
-    quizarray.push(data)
+    // quizarray.push(data)
     renderVocab(libname,data)
         
 
