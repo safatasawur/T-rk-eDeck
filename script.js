@@ -228,6 +228,7 @@ registerBtn.addEventListener('click', async (e)=>{
     register.style.display = 'none';
     sliderSection.style.display ='block'
     learningSection.style.display ='block'
+    footer.style.display ='block'
     
    }
      catch(error) {
@@ -351,14 +352,13 @@ quizTool.addEventListener('click',(e)=>{
 })
  navHome.addEventListener('click', (e) => {
     e.preventDefault();
-    // hideAllSections();
-    // document.getElementById('flashcard-section').style.display = 'block';
+    
     mainHome.style.display = 'block'
     sliderSection.style.display = 'block'
         learningSection.style.display ='block'
         profileSection.style.display='none'
         librarySection.style.display = 'none'
-
+        quizSection.style.display = 'none'
 });
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
@@ -485,18 +485,21 @@ createNewLibrary.addEventListener('click',(e)=>{
  let quizarray = []
  let currentQuizIndex = null;
    let correctAnswer = null
-
-let score = 0
+const yourScore = document.getElementById('your-score')
+const totalScore = document.getElementById('total-score')
 const quizWord = document.getElementById('quiz-word')
 const optionButtons = document.querySelectorAll('.quiz-option');
 const nextQuesBtn = document.getElementById('next-question-btn');
 const feedback = document.getElementById('quiz-feedback');
     let replica = []
 let usedIndices = new Set()
-
+const questionNo = document.getElementById('quiz-current')
+let quesNum = 1
+const quizTotalQues = document.getElementById('quiz-total')
+const quizBtn = document.getElementById("takeQuiz-btn")
+// const quizProgress = document.getElementById('ques')
 // ---------------------------------------------------------------------------------------------------------------------
  
-   
    
     libraryListParent.addEventListener('click', async(e) => {
     if (e.target.classList.contains('user-Library')) {
@@ -535,20 +538,27 @@ let usedIndices = new Set()
       for ( let vocabObj of presentVocablist){
         quizarray.push(vocabObj)
       }  
+       quizTotalQues.innerText=quizarray.length  
+       
+       totalScore.innerText= quizarray.length
+
+
     console.log(quizarray);
  
    const shuffledQuizArray = shuffle(quizarray);
     console.log(shuffledQuizArray);
    await showQuestion(quizarray)
-
+            // yourScore.innerText = score
 
 
 
     }
 });
+
    async function showQuestion(array){
     let falseOP =[]
-    
+    // if (array.length<2){console.log('need more than');
+    // }
   if (!array || array.length < 4 ) {
     console.error('Need at least 4 items to generate a quiz');
     return;
@@ -564,8 +574,7 @@ let usedIndices = new Set()
 } while (usedIndices.has(currentQuizIndex));
 
 usedIndices.add(currentQuizIndex);
-    // currentQuizIndex = Math.floor(Math.random() * (replica.length))
-    // console.log('current index ',currentQuizIndex,replica[currentQuizIndex]);
+    
     
     const currentItem = replica[currentQuizIndex]
     // if (!usedIndices.has(currentQuizIndex)){
@@ -628,29 +637,31 @@ if (indexOfCorrect !== -1) {
        
 
 }
-
- optionButtons.forEach(btn=>{
-  btn.addEventListener('click',(e)=>{
-    e.preventDefault()
+     let score = 0
+     optionButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
     const userAnswer = btn.value;
-
     if (userAnswer === correctAnswer) {
       feedback.textContent = '✅ Correct!';
       feedback.style.color = 'green';
+      score++
+      yourScore.innerText = score
     } else {
       feedback.textContent = `❌ Wrong! Correct: ${correctAnswer}`;
       feedback.style.color = 'red';
     }
-
-    feedback.style.display='block'
+    feedback.style.display = 'block';
     nextQuesBtn.style.display='block'
-    optionButtons.forEach(b => b.disabled = true);
-  })
- }) 
+    // optionButtons.forEach(b => b.disabled = true);
+  });
+});
+
  console.log(replica);
  
 nextQuesBtn.addEventListener('click', () => {
-  // currentQuizIndex++;
+  quesNum++
+  questionNo.innerText = quesNum
+  feedback.style.display='none'
   if ( usedIndices.size<quizarray.length) {
     showQuestion(replica);
   } else {
@@ -663,7 +674,11 @@ function endQuiz() {
   document.getElementById('next-question-btn').style.display = 'none';
   feedback.style.display = 'none'
 }
-
+// takeQuizBtn.addEventListener('click',(e)=>{
+//   e.preventDefault()
+//   if (quizarray<2){}
+//   else if (){}
+// })
 
 addFlashCard.addEventListener('click',(e)=>{
   e.preventDefault();
@@ -926,7 +941,7 @@ libraryListParent.addEventListener('click',(e)=>{
 
 
 })
-
+// nextQuesBtn.style.marginTop = '2px'
 
 // -----------------------------------------------MAIN FUNCTIONS-----------------------------
 function hideAllSections() {

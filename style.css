@@ -269,6 +269,7 @@ button:hover {
 
 
 /* ===== Library List ===== */
+#libraries-list{ margin-top: 10px;}
 #libraries-list ul.library-li {
   display: flex;
   flex-direction: column;
@@ -920,6 +921,8 @@ font-size: 2rem;}
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
+  height: auto;
 }
 
 .quiz-title {
@@ -987,12 +990,19 @@ font-size: 2rem;}
   font-size: 16px;
   cursor: pointer;
 } */
- #next-question-btn{display: none;
-margin-top: 15px;
+ .next-ques{
+  display: none;
+ margin-top: 8px;
 margin:auto}
 
-.next-btn:hover {
+.next-ques:hover {
   background-color: black;
   color: #e67e22;
 }
 
+#btn-create-library {
+  margin-top: 15px;
+}
+.quiz-score{
+  margin-top: 10px
+}
