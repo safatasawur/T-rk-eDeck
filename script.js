@@ -118,14 +118,20 @@ const categories = {
 // ----------------------------quiz-------------------------------------
 const quizSection = document.getElementById('quiz-section')
 function shuffle(array ){
+  const shuffled = [...array];
    for (let i= array.length -1; i>0;i--){
      const j = Math.floor(Math.random()* (i+1))
-     const temp = array[i]
-     array[i]=array[j]
-     array[j]=temp
+     const temp = shuffled[i]
+     shuffled[i]=shuffled[j]
+     shuffled[j]=temp
   }
-  return array
+  return shuffled
 }
+// const num = [1,3,4,6,7]
+// console.log('orginal ',num);
+// const anwe=shuffle(num)
+// console.log('shuffle',anwe);
+
 
 // -----------------------------------------------
 
@@ -145,6 +151,8 @@ const learningSection = document.getElementById('learning-tools')
 
 const navBar = document.getElementById('nav-library')
 navBar.style.display='none'
+const footer = document.getElementById('theFooter')
+footer.style.display='none'
 
 const login  = document.getElementById('login-section')
 login.style.display=' block'
@@ -176,6 +184,7 @@ loginBtn.addEventListener('click', (e)=>{
            login.style.display = 'none';
             sliderSection.style.display ='block'
               learningSection.style.display ='block'
+              footer.style.display = 'block'
 
           
     })
@@ -474,7 +483,22 @@ createNewLibrary.addEventListener('click',(e)=>{
   const formWord = document.getElementById('custom-word')
  const formMeaning = document.getElementById('custom-meaning')
  const formImage= document.getElementById('custom-image')
+ const loadedLibraries = new Set();
 
+//  ----------------------------QUIZ RELATED VARIABLE--------------
+ let quizarray = null
+ let currentQuizIndex = null;
+   let correctAnswer = null
+
+let score = 0
+const quizWord = document.getElementById('quiz-word')
+const optionButtons = document.querySelectorAll('.quiz-option');
+const nextQuesBtn = document.getElementById('next-question-btn');
+const feedback = document.getElementById('quiz-feedback');
+    let replica = []
+let usedIndices = new Set()
+
+// ---------------------------------------------------------------------------------------------------------------------
  
    
    
@@ -487,20 +511,32 @@ createNewLibrary.addEventListener('click',(e)=>{
     console.log('selected lib name ',selectedLibraryName);
     console.log('user libraray obj :',userLibraries);
     
+    customLibrarySection.style.display = 'block';
+    librarySection.style.display ="none"
+    customLibraryTitle.textContent = selectedLibraryName
+    console.log('you opened the library :',selectedLibraryName);
+    librarySection.style.display="none"
+    if (! selectedLibraryName || userLibraries[selectedLibraryName]) { console.log('some problem')
+    }
+    if (!loadedLibraries.has(selectedLibraryName)) {
+      await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id)
+          await loadVocab(user.uid, userLibraries[selectedLibraryName].id)
+          loadedLibraries.add(selectedLibraryName)}
+          else{
+      console.log(`Library "${selectedLibraryName}" already loaded. Skipping reload.`)
+      console.log(loadedLibraries);
+      ;
+      }
+      
+          renderCustomerFlashCard(selectedLibraryName);
+
+          
     
-    if (selectedLibraryName && userLibraries[selectedLibraryName]) {
-    await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id)
-     await loadVocab(user.uid, userLibraries[selectedLibraryName].id)
-//      vocabBody.innerHTML = '';
-//      const vocabList = userLibraries[selectedLibraryName]?.vocabList || [];
-// for (const vocab of vocabList) {
-//   await renderVocab(selectedLibraryName, vocab);
-// }
   const presentFlashcard = userLibraries[selectedLibraryName].flashcards
      console.log('flashcards',presentFlashcard);
   const presentVocablist = userLibraries[selectedLibraryName].vocabList
      console.log('present vocab list',presentVocablist);
-     const quizarray =[]
+     quizarray =[]
       for ( let flashObj of presentFlashcard){
         quizarray.push(flashObj)
       }
@@ -509,23 +545,139 @@ createNewLibrary.addEventListener('click',(e)=>{
       }
     console.log(quizarray);
  
-   const shuffled = shuffle(quizarray);
-    console.log(shuffled);
+   const shuffledQuizArray = shuffle(quizarray);
+    console.log(shuffledQuizArray);
+   await showQuestion(quizarray)
 
-};
-    
-    
-   } 
-   
 
- customLibrarySection.style.display = 'block';
-    librarySection.style.display ="none"
-    customLibraryTitle.textContent = selectedLibraryName
-    console.log('you opened the library :',selectedLibraryName);
-    renderCustomerFlashCard(selectedLibraryName);
-    librarySection.style.display="none"
-  
+
+//  customLibrarySection.style.display = 'block';
+//     librarySection.style.display ="none"
+//     customLibraryTitle.textContent = selectedLibraryName
+//     console.log('you opened the library :',selectedLibraryName);
+//     renderCustomerFlashCard(selectedLibraryName);
+//     librarySection.style.display="none"
+    }
 });
+   async function showQuestion(array){
+    let falseOP =[]
+    
+  if (!array || array.length < 4 ) {
+    console.error('Need at least 4 items to generate a quiz');
+    return;
+  }
+
+    console.log('org array',array);
+    
+     replica = [...array]
+    console.log('mian replica',replica);
+    
+    do {
+  currentQuizIndex = Math.floor(Math.random() * replica.length);
+} while (usedIndices.has(currentQuizIndex));
+
+usedIndices.add(currentQuizIndex);
+    // currentQuizIndex = Math.floor(Math.random() * (replica.length))
+    // console.log('current index ',currentQuizIndex,replica[currentQuizIndex]);
+    
+    const currentItem = replica[currentQuizIndex]
+    // if (!usedIndices.has(currentQuizIndex)){
+    //       usedIndices.add(currentQuizIndex)
+    // }else return
+    console.log('curerent item',currentQuizIndex);
+    
+  
+    if (!currentItem) { 
+      console.log('cuurent item undefined');
+      
+      return;}
+    
+const theWord = currentItem.word || '(missing word)';
+    const theMeaning = currentItem.meaning || '(missing meaning)';
+
+    console.log('Word:', theWord);
+    console.log('Meaning:', theMeaning);
+    
+    // replica.splice(currentQuizIndex,1)
+    console.log('new replica',replica);
+    
+    const questionType = Math.random() < 0.5 ? 'word-to-meaning' : 'meaning-to-word'
+     if ( questionType==='word-to-meaning'){
+         quizWord.textContent = `What is the meaning of ${theWord}`
+         correctAnswer = theMeaning
+         
+               falseOP = replica.map(obj=> obj.meaning)
+
+
+     }
+     else{
+       quizWord.textContent =  `What is the meaning of ${theMeaning}`
+       correctAnswer = theWord
+              falseOP = replica.map(obj=> obj.word)
+
+     }
+     console.log(falseOP);
+          let copyFalse =  [...falseOP]
+         const indexOfCorrect = copyFalse.indexOf(correctAnswer);
+if (indexOfCorrect !== -1) {
+    copyFalse.splice(indexOfCorrect, 1); // Remove it
+}
+
+      //  const options =  [...shuffle(falseOP).slice(0, 3)];
+       const options = shuffle([correctAnswer,...shuffle(copyFalse).slice(0, 3)]);
+      //  const options = shuffle([correctAnswer, ...shuffle(falseOP).slice(0, 3)]);
+        console.log(options);
+      options.forEach((opt, index) => {
+      if (optionButtons[index]) {
+    optionButtons[index].textContent = opt;
+    optionButtons[index].value = opt; // store value for checking later
+}
+
+});
+       console.log(replica);
+       console.log(usedIndices);
+       console.log(falseOP);
+       
+       
+
+}
+
+ optionButtons.forEach(btn=>{
+  btn.addEventListener('click',(e)=>{
+    e.preventDefault()
+    const userAnswer = btn.value;
+
+    if (userAnswer === correctAnswer) {
+      feedback.textContent = '✅ Correct!';
+      feedback.style.color = 'green';
+    } else {
+      feedback.textContent = `❌ Wrong! Correct: ${correctAnswer}`;
+      feedback.style.color = 'red';
+    }
+
+    feedback.style.display='block'
+    nextQuesBtn.style.display='block'
+    optionButtons.forEach(b => b.disabled = true);
+  })
+ }) 
+ console.log(replica);
+ 
+nextQuesBtn.addEventListener('click', () => {
+  // currentQuizIndex++;
+  if ( usedIndices.size<quizarray.length) {
+    showQuestion(replica);
+  } else {
+    endQuiz(); // Define your own function for this
+  }
+});
+function endQuiz() {
+  quizWord.textContent = '🎉 Quiz Completed!';
+  document.querySelector('.quiz-options').style.display = 'none';
+  document.getElementById('next-question-btn').style.display = 'none';
+  feedback.style.display = 'none'
+}
+
+
 addFlashCard.addEventListener('click',(e)=>{
   e.preventDefault();
   addFlashCardForm.style.display = 'block'
@@ -750,9 +902,15 @@ vocabBody.addEventListener('click', function (e) {
   }
 })
 // -------------------------------------QUIZ--------------------------------------------------------------
-let score = 0;
+// let score = 0;
 const takeQuizBtn = document.getElementById('takeQuiz-btn')
 const quizLibraryName = document.getElementById('quiz-library-name')
+const backArrow3 = document.getElementById('back-arrow3')
+backArrow3.addEventListener('click',(e)=>{
+    // librarySection.style.display='block'
+    quizSection.style.display='none'
+     customLibrarySection.style.display ='block'
+  })
 takeQuizBtn.addEventListener('click',(e)=>{
   hideAllSections()
   quizSection.style.display='block'
@@ -769,13 +927,7 @@ libraryListParent.addEventListener('click',(e)=>{
 
 
 })
-// function shuffle(array ){
-//    for (let i= array.length -1; i>0;i--){
-//      const j = Math.floor(Math.random()* (i+1))
-//       [array[i],array[j]] = [array[j],array[i]]
-//   }
-//   return array
-// }
+
 
 // -----------------------------------------------MAIN FUNCTIONS-----------------------------
 function hideAllSections() {

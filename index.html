@@ -302,6 +302,10 @@
   <div id="custom-flashcards"></div>
     </section>
     <section id="quiz-section">
+       <div id="back-arrow3" style="cursor: pointer; display: flex; align-items: center; gap: 6px;" class="arrow">
+     <span style="font-size: 24px;">←</span>
+    <span>Back</span>
+    </div>
     <div class="quiz-container">
     <h2 class="quiz-title">Quiz Time!</h2>
     <p class="quiz-library-name">Library: <span id="quiz-library-name">My Library</span></p>
@@ -312,15 +316,15 @@
     </div>
 
     <div class="quiz-options">
-      <button class="quiz-option">Option 1</button>
-      <button class="quiz-option">Option 2</button>
-      <button class="quiz-option">Option 3</button>
-      <button class="quiz-option">Option 4</button>
+      <button class="quiz-option quiz-option1">Option 1</button>
+      <button class="quiz-option quiz-option2">Option 2</button>
+      <button class="quiz-option quiz-option3">Option 3</button>
+      <button class="quiz-option quiz-option4">Option 4</button>
     </div>
 
-    <p id="quiz-feedback" class="quiz-feedback hidden">Correct!</p>
+    <p id="quiz-feedback" class="quiz-feedback ">Correct!</p>
 
-    <button id="next-question-btn" class="next-btn hidden ">Next</button>
+    <button id="next-question-btn" class="next-btn  ">Next</button>
   </div>
   </section>
   
@@ -350,7 +354,7 @@
     </tbody>
   </table>
     </section>
-<footer class="footer">
+<footer class="footer" id="theFooter">
   <div class="footer-grid">
       <div>
         <h4>Explore</h4>
