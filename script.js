@@ -504,8 +504,21 @@ const quizBtn = document.getElementById("takeQuiz-btn")
     libraryListParent.addEventListener('click', async(e) => {
     if (e.target.classList.contains('user-Library')) {
     selectedLibraryName = e.target.getAttribute('data-name');
+    console.log("Clicked library name:", e.target.getAttribute('data-name'));
+console.log("Clicked library name:", selectedLibraryName);
+
     document.getElementById('create-library-section').style.display = 'none';
     const user = auth.currentUser
+    if (!user || !user.uid) {
+  console.error('User not logged in or invalid user:', user);
+  return;
+}
+    const libObj = userLibraries[selectedLibraryName];
+    if (!libObj || !libObj.id) {
+  console.error('Library id missing for:', selectedLibraryName, libObj);
+  return;
+}
+
     console.log('selected libarary :',userLibraries[selectedLibraryName]);
     console.log('selected lib name ',selectedLibraryName);
     console.log('user libraray obj :',userLibraries);
@@ -515,16 +528,16 @@ const quizBtn = document.getElementById("takeQuiz-btn")
     customLibraryTitle.textContent = selectedLibraryName
     console.log('you opened the library :',selectedLibraryName);
     librarySection.style.display="none"
-    if (! selectedLibraryName || userLibraries[selectedLibraryName]) { console.log('some problem')
+    if (! selectedLibraryName || !userLibraries[selectedLibraryName]) { console.log('some problem')
     }
     if (!loadedLibraries.has(selectedLibraryName)) {
-      await loadFlashCard(user.uid, userLibraries[selectedLibraryName].id)
-          await loadVocab(user.uid, userLibraries[selectedLibraryName].id)
+      await loadFlashCard(user.uid, libObj.id)
+          await loadVocab(user.uid, libObj.id)
           loadedLibraries.add(selectedLibraryName)}
           else{
       console.log(`Library "${selectedLibraryName}" already loaded. Skipping reload.`)
       console.log(loadedLibraries);
-      ;
+      renderCustomerFlashCard(selectedLibraryName)
       }
       
         const presentFlashcard = userLibraries[selectedLibraryName].flashcards
@@ -545,9 +558,9 @@ const quizBtn = document.getElementById("takeQuiz-btn")
 
     console.log(quizarray);
  
-   const shuffledQuizArray = shuffle(quizarray);
-    console.log(shuffledQuizArray);
-   await showQuestion(quizarray)
+  //  const shuffledQuizArray = shuffle(quizarray);
+  //   console.log(shuffledQuizArray);
+  //  await showQuestion(quizarray)
             // yourScore.innerText = score
 
 
@@ -557,11 +570,16 @@ const quizBtn = document.getElementById("takeQuiz-btn")
 
    async function showQuestion(array){
     let falseOP =[]
+        const length = array.length
+
     // if (array.length<2){console.log('need more than');
     // }
-  if (!array || array.length < 4 ) {
-    console.error('Need at least 4 items to generate a quiz');
-    return;
+  // if (!array || array.length < 4 ) 
+  // console.error('Need at least 4 items to generate a quiz')
+  if (!array || length<3) 
+    {
+    console.error('array not found or need more tahn two items');
+      return;
   }
 
     console.log('org array',array);
@@ -577,24 +595,19 @@ usedIndices.add(currentQuizIndex);
     
     
     const currentItem = replica[currentQuizIndex]
-    // if (!usedIndices.has(currentQuizIndex)){
-    //       usedIndices.add(currentQuizIndex)
-    // }else return
     console.log('curerent item',currentQuizIndex);
     
   
     if (!currentItem) { 
       console.log('cuurent item undefined');
-      
       return;}
     
-const theWord = currentItem.word || '(missing word)';
+    const theWord = currentItem.word || '(missing word)';
     const theMeaning = currentItem.meaning || '(missing meaning)';
 
     console.log('Word:', theWord);
     console.log('Meaning:', theMeaning);
     
-    // replica.splice(currentQuizIndex,1)
     console.log('new replica',replica);
     
     const questionType = Math.random() < 0.5 ? 'word-to-meaning' : 'meaning-to-word'
@@ -618,25 +631,28 @@ const theWord = currentItem.word || '(missing word)';
 if (indexOfCorrect !== -1) {
     copyFalse.splice(indexOfCorrect, 1); // Remove it
 }
-
+       const optionCount = Math.min(length, 4);
+         const options = shuffle([correctAnswer, ...shuffle(copyFalse).slice(0, optionCount - 1)]);
       //  const options =  [...shuffle(falseOP).slice(0, 3)];
-       const options = shuffle([correctAnswer,...shuffle(copyFalse).slice(0, 3)]);
-      //  const options = shuffle([correctAnswer, ...shuffle(falseOP).slice(0, 3)]);
-        console.log(options);
-      options.forEach((opt, index) => {
-      if (optionButtons[index]) {
-    optionButtons[index].textContent = opt;
-    optionButtons[index].value = opt; // store value for checking later
-}
-
-});
+      console.log('options',options);
+      
+     
+      optionButtons.forEach((btn, index) => {
+  if (index < optionCount) {
+    btn.style.display = 'block';
+    btn.textContent = options[index];
+    btn.value = options[index];
+    btn.disabled = false;
+  } else {
+    btn.style.display = 'none'; // Hide extra buttons
+  }
+    // store value for checking later
+  });
+      
        console.log(replica);
        console.log(usedIndices);
        console.log(falseOP);
-       
-       
-
-}
+  }
      let score = 0
      optionButtons.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -744,7 +760,12 @@ saveFlashCard.addEventListener('click',async (e)=>{
   userLibraries[libname].flashcards = [];
   snapshot.forEach((doc)=>{
     const data = doc.data()
-    userLibraries[libname].flashcards.push(data)
+    // userLibraries[libname].flashcards.push(data)
+     if (data.word && data.meaning) {
+    userLibraries[libname].flashcards.push(data);
+  } else {
+    console.warn("Invalid flashcard skipped:", data);
+  }
    
     
   })
@@ -864,16 +885,18 @@ console.log('voacba list after reloading : ',userLibraries[selectedLibraryName].
 
  
 });
-const  renderVocab = async (selectedLibraryName,vocab)=>{
+const  renderVocab = async (selectedLibraryName)=>{
       if (!selectedLibraryName) return;
 
   
     // userLibraries[selectedLibraryName].vocabList.push(vocab)
- 
-  const row = document.createElement('tr');
-
-  // Create columns
-  row.innerHTML = `
+ vocabBody.innerHTML = '';  // Clear previous vocab items
+ const vocabs = userLibraries[selectedLibraryName]?.vocabList|| []
+       
+         vocabs.forEach(vocab => {
+    const row = document.createElement('tr');
+    // div.classList.add('user-flashcard');
+    row.innerHTML = `
     <td>${vocab.word}</td>
     <td>${vocab.meaning}</td>
     <td>
@@ -881,7 +904,21 @@ const  renderVocab = async (selectedLibraryName,vocab)=>{
     </td>
   `;
 
-  vocabBody.appendChild(row);
+  vocabBody.appendChild(row);})
+    // flashCardContainer.appendChild(div);
+    
+  // const row = document.createElement('tr');
+
+  // Create columns
+  // row.innerHTML = `
+  //   <td>${vocab.word}</td>
+  //   <td>${vocab.meaning}</td>
+  //   <td>
+  //     <button class="delete-btn">Delete</button>
+  //   </td>
+  // `;
+
+  // vocabBody.appendChild(row);
 
   vocabWord.value = '';
   vocabMeaning.value = '';
