@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signOut,updateProfile } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-  import {collection,addDoc,getDocs} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import {collection,addDoc,getDocs,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // your logic here
 
@@ -21,13 +21,24 @@ catch(error){console.log('some error',error)}
 const addFlashCards = async (userId,libraryId,flashcard)=>{
   const flashcardRef = collection(db,'users',userId,'libraries',libraryId,'flashcards')
   const docRef = await addDoc(flashcardRef,flashcard)
-  console.log(flashcard);
+    console.log(flashcard);
+  return docRef.id 
+
   
 }
 const addVocablist = async (userId,libraryId,vocab)=>{
   const vocablistRef = collection(db,'users',userId,'libraries',libraryId,'vocabList')
   const docRef = await addDoc(vocablistRef,vocab)
   return docRef.id 
+}
+async function deleteFromFirestore(userId, libId, collectionName, docId) {
+  try {
+    const docRef = doc(db, 'users', userId, 'libraries', libId, collectionName, docId);
+    await deleteDoc(docRef);
+    console.log(`Deleted ${collectionName} item with ID: ${docId}`);
+  } catch (error) {
+    console.error("Error deleting document:", error);
+  }
 }
 // -------------------------------flashcards------------------------------------
 const categories = {
@@ -118,6 +129,8 @@ const categories = {
 // ----------------------------quiz-------------------------------------
 const quizSection = document.getElementById('quiz-section')
 function shuffle(array ){
+  console.log('entered shufle function');
+  
   const shuffled = [...array];
    for (let i= array.length -1; i>0;i--){
      const j = Math.floor(Math.random()* (i+1))
@@ -412,11 +425,11 @@ createNewLibrary.addEventListener('click',(e)=>{
      if (nameOfLibrary.trim() === "") return;
 
    
-          const li = document.createElement('li')
+        const li = document.createElement('li')
         li.textContent = nameOfLibrary;
         namesLibrary.add(nameOfLibrary)
-         li.classList.add('user-Library')
-       li.setAttribute("data-name", nameOfLibrary);
+        li.classList.add('user-Library')
+        li.setAttribute("data-name", nameOfLibrary);
         libraryListParent.appendChild(li)
         
      libraryNameInput.value=""
@@ -437,7 +450,7 @@ createNewLibrary.addEventListener('click',(e)=>{
   snapshot.forEach((doc)=>{
     const data = doc.data()
     const name = data.name
-    const id = doc.id; // ✅ this is the Firestore document ID
+    const id = doc.id; 
 
  renderTheLibrary(name, id);  })
  }
@@ -451,9 +464,10 @@ createNewLibrary.addEventListener('click',(e)=>{
          return;}
    
       const user = auth.currentUser
+  const libId = await addLibrary(user.uid, nameOfLibrary); // ✅ get ID
 
-     await addLibrary(user.uid, nameOfLibrary)
-      await    renderTheLibrary(nameOfLibrary)
+    //  await addLibrary(user.uid, nameOfLibrary)
+      await    renderTheLibrary(nameOfLibrary,libId)
 
    
     // console.log(quizarray);
@@ -538,6 +552,7 @@ console.log("Clicked library name:", selectedLibraryName);
       console.log(`Library "${selectedLibraryName}" already loaded. Skipping reload.`)
       console.log(loadedLibraries);
       renderCustomerFlashCard(selectedLibraryName)
+      renderVocab(selectedLibraryName)
       }
       
         const presentFlashcard = userLibraries[selectedLibraryName].flashcards
@@ -558,10 +573,10 @@ console.log("Clicked library name:", selectedLibraryName);
 
     console.log(quizarray);
  
-  //  const shuffledQuizArray = shuffle(quizarray);
-  //   console.log(shuffledQuizArray);
-  //  await showQuestion(quizarray)
-            // yourScore.innerText = score
+   const shuffledQuizArray = shuffle(quizarray);
+    console.log(shuffledQuizArray);
+   await showQuestion(quizarray)
+            yourScore.innerText = score
 
 
 
@@ -762,6 +777,8 @@ saveFlashCard.addEventListener('click',async (e)=>{
     const data = doc.data()
     // userLibraries[libname].flashcards.push(data)
      if (data.word && data.meaning) {
+            data.id = doc.id; // ✅ Attach the document ID here!
+
     userLibraries[libname].flashcards.push(data);
   } else {
     console.warn("Invalid flashcard skipped:", data);
@@ -817,13 +834,15 @@ function renderCustomerFlashCard(libraryName){
       flashCardContainer.innerHTML = "";
       const flashcards = userLibraries[libraryName]?.flashcards || []
        
-         flashcards.forEach(card => {
+         flashcards.forEach((card,index)=> {
     const div = document.createElement('div');
     div.classList.add('user-flashcard');
     div.innerHTML = `
       <h2>${card.word}</h2>
       <p>${card.meaning}</p>
       ${card.imageURL ? `<img src="${card.imageURL}" alt="Flashcard image">` : ""}
+      <button class="delete-flashcard" data-id="${card.id}" data-index="${index}">Delete</button>
+    
     `;
     flashCardContainer.appendChild(div);
     console.log("Rendering flashcards for:", libraryName, userLibraries[libraryName]);
@@ -871,13 +890,20 @@ vocabForm.addEventListener('submit', async  (e)=>{
     word: Vword,
     meaning: Vmeaning
   };
-
+      
       const user = auth.currentUser
       const libraryId = userLibraries[selectedLibraryName].id
-      await addVocablist(user.uid,libraryId,vocab)
-             renderVocab(selectedLibraryName,vocab)
-                 userLibraries[selectedLibraryName].vocabList.push(vocab)
+      const docId = await addVocablist(user.uid, libraryId, vocab);
+  vocab.id = docId;
+      // await addVocablist(user.uid,libraryId,vocab)
+            console.log('selected libraray name insider voacb ofrm ',selectedLibraryName);
+console.log('Resolved library:', userLibraries[selectedLibraryName]);
+
+        userLibraries[selectedLibraryName].vocabList.push(vocab)
                  quizarray.push(vocab)
+             renderVocab(selectedLibraryName)
+                //  userLibraries[selectedLibraryName].vocabList.push(vocab)
+                //  quizarray.push(vocab)
                  console.log('updated quizarrayw ith voacb ', quizarray);
                  
 console.log('voacba list after reloading : ',userLibraries[selectedLibraryName].vocabList);
@@ -885,23 +911,28 @@ console.log('voacba list after reloading : ',userLibraries[selectedLibraryName].
 
  
 });
+console.log('selected libraray name(before rendervocab) ',selectedLibraryName);
+
 const  renderVocab = async (selectedLibraryName)=>{
+  console.log('Resolved library:', userLibraries[selectedLibraryName]);
+
       if (!selectedLibraryName) return;
+      console.log('selected libraray not found ( render vocab)');
+      
 
   
     // userLibraries[selectedLibraryName].vocabList.push(vocab)
  vocabBody.innerHTML = '';  // Clear previous vocab items
  const vocabs = userLibraries[selectedLibraryName]?.vocabList|| []
        
-         vocabs.forEach(vocab => {
+         vocabs.forEach((vocab,index) => {
     const row = document.createElement('tr');
     // div.classList.add('user-flashcard');
     row.innerHTML = `
     <td>${vocab.word}</td>
     <td>${vocab.meaning}</td>
-    <td>
-      <button class="delete-btn">Delete</button>
-    </td>
+    <td><button class="delete-vocab delete-btn" data-id="${vocab.id}" data-index="${index}">Delete</button></td>
+    
   `;
 
   vocabBody.appendChild(row);})
@@ -928,16 +959,21 @@ const  loadVocab = async (userId,libId)=>{
   const vocabRef = collection(db,"users",userId,"libraries",libId,"vocabList")
   const snapshot = await getDocs(vocabRef)
   const libname = Object.keys(userLibraries).find(name=>userLibraries[name].id === libId)
+  console.log('load voacb lib name',libname);
+  
   if (!libname) return
-  userLibraries[libname].vocablist = [];
+  userLibraries[libname].vocabList = [];
   snapshot.forEach((doc)=>{
     const data = doc.data()
+          data.id = doc.id; // ✅ Attach the document ID here!
+
     userLibraries[libname].vocabList.push(data)
     // quizarray.push(data)
-    renderVocab(libname,data)
         
 
   })
+      renderVocab(libname)
+
     console.log('quiz array vocab updtaed',quizarray);
 
 console.log(`Loaded Vocab List  for ${libname}:`, userLibraries[libname].vocabList);
@@ -946,12 +982,46 @@ console.log(`Loaded Vocab List  for ${libname}:`, userLibraries[libname].vocabLi
 
 
 }
-vocabBody.addEventListener('click', function (e) {
-  if (e.target.classList.contains('delete-btn')) {
-    const row = e.target.closest('tr');
-    row.remove();
+document.addEventListener('click', async (e) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const libOj=userLibraries[selectedLibraryName]
+    if (!libOj) {
+      console.log('not fund lib');
+      
+    };
+
+
+  // Delete Flashcard
+  if (e.target.classList.contains('delete-flashcard')) {
+    const docId = e.target.getAttribute('data-id');
+    if (!docId) {
+    console.error("No ID found for deletion");
+    return;
   }
-})
+    await deleteFromFirestore(user.uid, libOj.id, 'flashcards', docId);
+    libOj.flashcards = libOj.flashcards.filter(card => card.id !== docId);
+        quizarray = quizarray.filter(card => card.id !== docId);
+
+    await loadFlashCard(user.uid, libOj.id); 
+  }
+
+  // Delete Vocab
+  if (e.target.classList.contains('delete-vocab')) {
+    const docId = e.target.getAttribute('data-id');
+    await deleteFromFirestore(user.uid, libOj.id, 'vocabList', docId);
+        libOj.vocabList = libOj.vocabList.filter(card => card.id !== docId);
+    quizarray = quizarray.filter(vocab => vocab.id !== docId);
+
+    await loadVocab(user.uid, libOj.id); 
+  }
+});
+// vocabBody.addEventListener('click', function (e) {
+//   if (e.target.classList.contains('delete-btn')) {
+//     const row = e.target.closest('tr');
+//     row.remove();
+//   }
+// })
 // -------------------------------------QUIZ--------------------------------------------------------------
 // let score = 0;
 const takeQuizBtn = document.getElementById('takeQuiz-btn')

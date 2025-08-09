@@ -1005,4 +1005,8 @@ margin:auto}
 }
 .quiz-score{
   margin-top: 10px
+}.delete-flashcard{
+  font-size: 0.7rem;
+  padding: 5px;
+  margin-top: 5px;
 }
