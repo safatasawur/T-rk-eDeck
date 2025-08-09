@@ -1010,3 +1010,6 @@ margin:auto}
   padding: 5px;
   margin-top: 5px;
 }
+.quiz-score-end{
+  display: none;
+}

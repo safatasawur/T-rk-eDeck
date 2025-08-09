@@ -515,74 +515,45 @@ const quizBtn = document.getElementById("takeQuiz-btn")
 // ---------------------------------------------------------------------------------------------------------------------
  
    
-    libraryListParent.addEventListener('click', async(e) => {
-    if (e.target.classList.contains('user-Library')) {
-    selectedLibraryName = e.target.getAttribute('data-name');
-    console.log("Clicked library name:", e.target.getAttribute('data-name'));
-console.log("Clicked library name:", selectedLibraryName);
 
-    document.getElementById('create-library-section').style.display = 'none';
-    const user = auth.currentUser
-    if (!user || !user.uid) {
-  console.error('User not logged in or invalid user:', user);
-  return;
-}
-    const libObj = userLibraries[selectedLibraryName];
-    if (!libObj || !libObj.id) {
-  console.error('Library id missing for:', selectedLibraryName, libObj);
-  return;
-}
+quizBtn.addEventListener('click',(e)=>{
+  e.preventDefault()
+  hideAllSections()
+    quizSection.style.display = 'block'
+  // Hide other sections if needed
 
-    console.log('selected libarary :',userLibraries[selectedLibraryName]);
-    console.log('selected lib name ',selectedLibraryName);
-    console.log('user libraray obj :',userLibraries);
-    
-    customLibrarySection.style.display = 'block';
-    librarySection.style.display ="none"
-    customLibraryTitle.textContent = selectedLibraryName
-    console.log('you opened the library :',selectedLibraryName);
-    librarySection.style.display="none"
-    if (! selectedLibraryName || !userLibraries[selectedLibraryName]) { console.log('some problem')
-    }
-    if (!loadedLibraries.has(selectedLibraryName)) {
-      await loadFlashCard(user.uid, libObj.id)
-          await loadVocab(user.uid, libObj.id)
-          loadedLibraries.add(selectedLibraryName)}
-          else{
-      console.log(`Library "${selectedLibraryName}" already loaded. Skipping reload.`)
-      console.log(loadedLibraries);
-      renderCustomerFlashCard(selectedLibraryName)
-      renderVocab(selectedLibraryName)
-      }
-      
-        const presentFlashcard = userLibraries[selectedLibraryName].flashcards
-     console.log('flashcards',presentFlashcard);
-  const presentVocablist = userLibraries[selectedLibraryName].vocabList
-     console.log('present vocab list',presentVocablist);
-     quizarray =[]
-      for ( let flashObj of presentFlashcard){
-        quizarray.push(flashObj)
-      }
-      for ( let vocabObj of presentVocablist){
-        quizarray.push(vocabObj)
-      }  
-       quizTotalQues.innerText=quizarray.length  
-       
-       totalScore.innerText= quizarray.length
+  // Reset quiz state and start fresh
+  resetAndStartQuiz();
+  
+})
 
+async function resetAndStartQuiz() {
+  const presentFlashcard = userLibraries[selectedLibraryName]?.flashcards || [];
+  const presentVocablist = userLibraries[selectedLibraryName]?.vocabList || [];
 
-    console.log(quizarray);
- 
-   const shuffledQuizArray = shuffle(quizarray);
+  quizarray = [...presentFlashcard, ...presentVocablist];
+
+  usedIndices = new Set();
+  score = 0;
+  quesNum = 1;
+  yourScore.innerText = score;
+  questionNo.innerText = quesNum;
+  feedback.style.display = 'none';
+  nextQuesBtn.style.display = 'none';
+  document.querySelector('.quiz-options').style.display = 'block';
+
+  quizTotalQues.innerText = quizarray.length;
+  totalScore.innerText = quizarray.length;
+
+  // quizarray = shuffle(quizarray);
+
+  // showQuestion(quizarray);
+  const shuffledQuizArray = shuffle(quizarray);
     console.log(shuffledQuizArray);
-   await showQuestion(quizarray)
+   await showQuestion(shuffledQuizArray)
+  //  await showQuestion(quizarray)
             yourScore.innerText = score
-
-
-
-    }
-});
-
+}
    async function showQuestion(array){
     let falseOP =[]
         const length = array.length
@@ -688,7 +659,10 @@ if (indexOfCorrect !== -1) {
 });
 
  console.log(replica);
- 
+ const quizfinalscore = document.querySelector('.quiz-score-end')
+ const quizyourfinal = document.getElementById('your-Score')
+ const quiztotalfinal = document.getElementById('total-Score')
+
 nextQuesBtn.addEventListener('click', () => {
   quesNum++
   questionNo.innerText = quesNum
@@ -703,6 +677,9 @@ function endQuiz() {
   quizWord.textContent = '🎉 Quiz Completed!';
   document.querySelector('.quiz-options').style.display = 'none';
   document.getElementById('next-question-btn').style.display = 'none';
+   quizfinalscore.style.display = 'block'
+   quizyourfinal.innerText = score
+   quiztotalfinal.innerText=quizarray.length
   feedback.style.display = 'none'
 }
 // takeQuizBtn.addEventListener('click',(e)=>{
@@ -1051,6 +1028,76 @@ libraryListParent.addEventListener('click',(e)=>{
 // nextQuesBtn.style.marginTop = '2px'
 
 // -----------------------------------------------MAIN FUNCTIONS-----------------------------
+ libraryListParent.addEventListener('click', async(e) => {
+    if (e.target.classList.contains('user-Library')) {
+    selectedLibraryName = e.target.getAttribute('data-name');
+    console.log("Clicked library name:", e.target.getAttribute('data-name'));
+console.log("Clicked library name:", selectedLibraryName);
+
+    document.getElementById('create-library-section').style.display = 'none';
+    const user = auth.currentUser
+    if (!user || !user.uid) {
+  console.error('User not logged in or invalid user:', user);
+  return;
+}
+    const libObj = userLibraries[selectedLibraryName];
+    if (!libObj || !libObj.id) {
+  console.error('Library id missing for:', selectedLibraryName, libObj);
+  return;
+}
+
+    console.log('selected libarary :',userLibraries[selectedLibraryName]);
+    console.log('selected lib name ',selectedLibraryName);
+    console.log('user libraray obj :',userLibraries);
+    
+    customLibrarySection.style.display = 'block';
+    librarySection.style.display ="none"
+    customLibraryTitle.textContent = selectedLibraryName
+    console.log('you opened the library :',selectedLibraryName);
+    librarySection.style.display="none"
+    if (! selectedLibraryName || !userLibraries[selectedLibraryName]) { console.log('some problem')
+    }
+    if (!loadedLibraries.has(selectedLibraryName)) {
+      await loadFlashCard(user.uid, libObj.id)
+          await loadVocab(user.uid, libObj.id)
+          loadedLibraries.add(selectedLibraryName)}
+          else{
+      console.log(`Library "${selectedLibraryName}" already loaded. Skipping reload.`)
+      console.log(loadedLibraries);
+      renderCustomerFlashCard(selectedLibraryName)
+      renderVocab(selectedLibraryName)
+      }
+      
+  //       const presentFlashcard = userLibraries[selectedLibraryName].flashcards
+  //    console.log('flashcards',presentFlashcard);
+  // const presentVocablist = userLibraries[selectedLibraryName].vocabList
+  //    console.log('present vocab list',presentVocablist);
+  //    quizarray =[]
+  //     for ( let flashObj of presentFlashcard){
+  //       quizarray.push(flashObj)
+  //     }
+  //     for ( let vocabObj of presentVocablist){
+  //       quizarray.push(vocabObj)
+  //     }  
+  //      quizTotalQues.innerText=quizarray.length  
+       
+  //      totalScore.innerText= quizarray.length
+
+
+  //   console.log(quizarray);
+ 
+  //  const shuffledQuizArray = shuffle(quizarray);
+  //   console.log(shuffledQuizArray);
+  //  await showQuestion(shuffledQuizArray)
+  // //  await showQuestion(quizarray)
+  //           yourScore.innerText = score
+ await resetAndStartQuiz()
+             yourScore.innerText = score
+
+
+
+    }
+});
 function hideAllSections() {
     const sections = document.querySelectorAll('section');
     sections.forEach(section => {
