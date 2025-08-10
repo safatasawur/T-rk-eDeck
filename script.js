@@ -40,15 +40,7 @@ async function deleteFromFirestore(userId, libId, collectionName, docId) {
     console.error("Error deleting document:", error);
   }
 }
-// async function deleteLibrary(userId,libId) {
-//   try{
-//       const docRef = doc(db,'users',userId,'libraries',libId)
-//   await deleteDoc(docRef)
-//   console.log('deleted a librray with lib id :',libId);
-//   }
-//   catch(error){ console.error('Error while deleting document', error);
-//   }
-// }
+
 async function deleteLibraryWithContents(userId, libId) {
   try {
     const libRef = doc(db, 'users', userId, 'libraries', libId);
