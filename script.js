@@ -40,6 +40,41 @@ async function deleteFromFirestore(userId, libId, collectionName, docId) {
     console.error("Error deleting document:", error);
   }
 }
+// async function deleteLibrary(userId,libId) {
+//   try{
+//       const docRef = doc(db,'users',userId,'libraries',libId)
+//   await deleteDoc(docRef)
+//   console.log('deleted a librray with lib id :',libId);
+//   }
+//   catch(error){ console.error('Error while deleting document', error);
+//   }
+// }
+async function deleteLibraryWithContents(userId, libId) {
+  try {
+    const libRef = doc(db, 'users', userId, 'libraries', libId);
+
+    // 1. Delete all flashcards
+    const flashcardsColRef = collection(libRef, 'flashcards');
+    const flashcardsSnapshot = await getDocs(flashcardsColRef);
+    for (const docSnap of flashcardsSnapshot.docs) {
+      await deleteDoc(docSnap.ref);
+    }
+
+    // 2. Delete all vocab
+    const vocabColRef = collection(libRef, 'vocabList');
+    const vocabSnapshot = await getDocs(vocabColRef);
+    for (const docSnap of vocabSnapshot.docs) {
+      await deleteDoc(docSnap.ref);
+    }
+
+    // 3. Delete the library document
+    await deleteDoc(libRef);
+
+    console.log(`✅ Deleted library ${libId} and all its contents`);
+  } catch (error) {
+    console.error('❌ Error deleting library with contents:', error);
+  }
+}
 // -------------------------------flashcards------------------------------------
 const categories = {
   animals: [
@@ -426,10 +461,14 @@ createNewLibrary.addEventListener('click',(e)=>{
 
    
         const li = document.createElement('li')
-        li.textContent = nameOfLibrary;
-        namesLibrary.add(nameOfLibrary)
         li.classList.add('user-Library')
         li.setAttribute("data-name", nameOfLibrary);
+        li.innerHTML=`<div class='eachlib-li'> <span class = 'theLibName'>${nameOfLibrary}</span> <i class = "delete-library fa-solid fa-trash-can" data-id="${libId}"
+        data-name="${nameOfLibrary}"></i> </div>`
+        // const nameLib = document.querySelector('.theLibName')
+        // nameLib.textContent = nameOfLibrary;
+        namesLibrary.add(nameOfLibrary)
+        
         libraryListParent.appendChild(li)
         
      libraryNameInput.value=""
@@ -665,8 +704,9 @@ if (indexOfCorrect !== -1) {
 nextQuesBtn.addEventListener('click', () => {
 const length= quizarray.length
 if(quesNum<length){
-  quesNum++ 
-    return}
+       quesNum++
+
+    }
   questionNo.innerText = quesNum
 
   feedback.style.display='none'
@@ -782,8 +822,7 @@ console.log(`Loaded flashcards for ${libname}:`, userLibraries[libname].flashcar
     {
       alert("Please enter both word and meaning.");
     return;}
-    // const cardData ={ word: Fword,meaning:Fmeaning}
-    // const cardData ={}
+   
          const cardData ={
           word : Fword,
           meaning : Fmeaning
@@ -799,7 +838,6 @@ console.log(`Loaded flashcards for ${libname}:`, userLibraries[libname].flashcar
      userLibraries[selectedLibrary].flashcards.push(cardData)
       quizarray.push(cardData)
                  console.log('updated quizarrayw ith flascrad ', quizarray);
-    //  console.log("Saved to:", selectedLibrary, userLibraries[selectedLibrary].flashcards);
 
      console.log(userLibraries);
     formWord.value = "";
@@ -821,7 +859,9 @@ function renderCustomerFlashCard(libraryName){
       <h2>${card.word}</h2>
       <p>${card.meaning}</p>
       ${card.imageURL ? `<img src="${card.imageURL}" alt="Flashcard image">` : ""}
-      <button class="delete-flashcard" data-id="${card.id}" data-index="${index}">Delete</button>
+      <!-- <button class="delete-flashcard" data-id="${card.id}" data-index="${index}">Delete</button>-->
+      <i class="delete-flashcard  fa-solid fa-trash-can" data-id="${card.id}" data-index="${index}"></i>
+      
     
     `;
     flashCardContainer.appendChild(div);
@@ -911,7 +951,9 @@ const  renderVocab = async (selectedLibraryName)=>{
     row.innerHTML = `
     <td>${vocab.word}</td>
     <td>${vocab.meaning}</td>
-    <td><button class="delete-vocab delete-btn" data-id="${vocab.id}" data-index="${index}">Delete</button></td>
+     <td><i class="delete-vocab delete-btn fa-regular fa-trash-can" data-id="${vocab.id}" data-index="${index}"></i></td>
+
+
     
   `;
 
@@ -965,6 +1007,23 @@ console.log(`Loaded Vocab List  for ${libname}:`, userLibraries[libname].vocabLi
 document.addEventListener('click', async (e) => {
   const user = auth.currentUser;
   if (!user) return;
+   if (e.target.classList.contains('delete-library')) {
+      // const libId = e.target.dataset.id;
+      const docId = e.target.getAttribute('data-id')
+      const libName = e.target.getAttribute('data-name')
+    // const libName = e.target.dataset.name;
+    e.stopPropagation()
+    // const docId = e.target.getAttribute('data-id');
+     
+    await deleteLibraryWithContents(user.uid, docId); 
+     delete userLibraries[libName];
+      namesLibrary.delete(libName);
+
+      // Remove from DOM
+      e.target.closest('li').remove();
+
+      console.log(`Library "${libName}" deleted`);
+  }
   const libOj=userLibraries[selectedLibraryName]
     if (!libOj) {
       console.log('not fund lib');
@@ -995,6 +1054,7 @@ document.addEventListener('click', async (e) => {
 
     await loadVocab(user.uid, libOj.id); 
   }
+ 
 });
 // vocabBody.addEventListener('click', function (e) {
 //   if (e.target.classList.contains('delete-btn')) {
@@ -1032,8 +1092,13 @@ libraryListParent.addEventListener('click',(e)=>{
 
 // -----------------------------------------------MAIN FUNCTIONS-----------------------------
  libraryListParent.addEventListener('click', async(e) => {
-    if (e.target.classList.contains('user-Library')) {
-    selectedLibraryName = e.target.getAttribute('data-name');
+  // console.log('enter mian func');
+  if (e.target.classList.contains('delete-library')) return;
+
+  const li = e.target.closest('.user-Library');
+  if (!li) return;
+    // if (e.target.classList.contains('user-Library')) {
+    selectedLibraryName = li.getAttribute('data-name');
     console.log("Clicked library name:", e.target.getAttribute('data-name'));
 console.log("Clicked library name:", selectedLibraryName);
 
@@ -1074,7 +1139,7 @@ console.log("Clicked library name:", selectedLibraryName);
   
  await resetAndStartQuiz()
              yourScore.innerText = score
- }
+ 
 });
 function hideAllSections() {
     const sections = document.querySelectorAll('section');

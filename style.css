@@ -962,6 +962,7 @@ font-size: 2rem;}
   background-color: #e67e22;
   cursor: pointer;
   transition: 0.2s;
+  width: 100%;
 }
 
 /* .quiz-option:hover {
@@ -1012,4 +1013,28 @@ margin:auto}
 }
 .quiz-score-end{
   display: none;
+}
+.delete-flashcard{
+  font-size: 2rem;
+  color: #e67e22;
+}
+.delete-vocab {
+  font-size: 1.5rem;
+  color: #e67e22;
+}
+.delete-library{
+  font-size: 1rem;
+  color: #e67e22;
+  /* margin: auto;
+  text-align: right; */
+  position: relative;
+  top: 5px;
+}
+.theLibName{
+  font-size: 1.3rem;
+}
+.eachlib-li{
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
 }
