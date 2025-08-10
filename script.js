@@ -511,6 +511,10 @@ const questionNo = document.getElementById('quiz-current')
 let quesNum = 1
 const quizTotalQues = document.getElementById('quiz-total')
 const quizBtn = document.getElementById("takeQuiz-btn")
+const quizfinalscore = document.querySelector('.quiz-score-end')
+ const quizyourfinal = document.getElementById('your-Score')
+ const quiztotalfinal = document.getElementById('total-Score')
+
 // const quizProgress = document.getElementById('ques')
 // ---------------------------------------------------------------------------------------------------------------------
  
@@ -541,13 +545,11 @@ async function resetAndStartQuiz() {
   feedback.style.display = 'none';
   nextQuesBtn.style.display = 'none';
   document.querySelector('.quiz-options').style.display = 'block';
+  quizfinalscore.style.display= 'none'
 
   quizTotalQues.innerText = quizarray.length;
   totalScore.innerText = quizarray.length;
 
-  // quizarray = shuffle(quizarray);
-
-  // showQuestion(quizarray);
   const shuffledQuizArray = shuffle(quizarray);
     console.log(shuffledQuizArray);
    await showQuestion(shuffledQuizArray)
@@ -659,13 +661,14 @@ if (indexOfCorrect !== -1) {
 });
 
  console.log(replica);
- const quizfinalscore = document.querySelector('.quiz-score-end')
- const quizyourfinal = document.getElementById('your-Score')
- const quiztotalfinal = document.getElementById('total-Score')
-
+ 
 nextQuesBtn.addEventListener('click', () => {
-  quesNum++
+const length= quizarray.length
+if(quesNum<length){
+  quesNum++ 
+    return}
   questionNo.innerText = quesNum
+
   feedback.style.display='none'
   if ( usedIndices.size<quizarray.length) {
     showQuestion(replica);
@@ -1068,35 +1071,10 @@ console.log("Clicked library name:", selectedLibraryName);
       renderVocab(selectedLibraryName)
       }
       
-  //       const presentFlashcard = userLibraries[selectedLibraryName].flashcards
-  //    console.log('flashcards',presentFlashcard);
-  // const presentVocablist = userLibraries[selectedLibraryName].vocabList
-  //    console.log('present vocab list',presentVocablist);
-  //    quizarray =[]
-  //     for ( let flashObj of presentFlashcard){
-  //       quizarray.push(flashObj)
-  //     }
-  //     for ( let vocabObj of presentVocablist){
-  //       quizarray.push(vocabObj)
-  //     }  
-  //      quizTotalQues.innerText=quizarray.length  
-       
-  //      totalScore.innerText= quizarray.length
-
-
-  //   console.log(quizarray);
- 
-  //  const shuffledQuizArray = shuffle(quizarray);
-  //   console.log(shuffledQuizArray);
-  //  await showQuestion(shuffledQuizArray)
-  // //  await showQuestion(quizarray)
-  //           yourScore.innerText = score
+  
  await resetAndStartQuiz()
              yourScore.innerText = score
-
-
-
-    }
+ }
 });
 function hideAllSections() {
     const sections = document.querySelectorAll('section');
