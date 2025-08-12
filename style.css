@@ -1070,8 +1070,8 @@ margin:auto}
   .slider {
     flex-direction: column;
     gap: 15px;
-  }
-}
+  } */
+/* } */
 
 /* Tablet (landscape & portrait) */
 /* @media (min-width: 601px) and (max-width: 1024px) {
@@ -1089,8 +1089,8 @@ margin:auto}
 
   #library-list {
     grid-template-columns: repeat(2, 1fr);
-  }
-} */
+  } */
+/* } */
 
 /* Large desktop */
 /* @media (min-width: 1440px) {
@@ -1105,4 +1105,4 @@ margin:auto}
   #library-list {
     grid-template-columns: repeat(4, 1fr);
   }
-} */ */
+} */

@@ -118,16 +118,16 @@ const categories = {
     { word: "gri", meaning: "gray", image: "imgs/gray.jpeg" }
   ],
   nouns: [
-    { word: "ev", meaning: "house", image: "imgs/house.jpeg" },
-    { word: "masa", meaning: "table", image: "imgs/table.jpeg" },
-    { word: "kitap", meaning: "book", image: "imgs/book.jpeg" },
-    { word: "araba", meaning: "car", image: "imgs/car.jpeg" },
-    { word: "okul", meaning: "school", image: "imgs/school.jpeg" },
-    { word: "kapı", meaning: "door", image: "imgs/door.jpeg" },
-    { word: "pencere", meaning: "window", image: "imgs/window.jpeg" },
-    { word: "kalem", meaning: "pen", image: "imgs/pen.jpeg" },
-    { word: "sandalye", meaning: "chair", image: "imgs/chair.jpeg" },
-    { word: "telefon", meaning: "phone", image: "imgs/phone.jpeg" }
+    { word: "ev", meaning: "house", image: "imgs/noun/ev.png" },
+    { word: "masa", meaning: "table", image: "imgs/noun/table.png" },
+    { word: "kitap", meaning: "book", image: "imgs/noun/book.png" },
+    { word: "araba", meaning: "car", image: "imgs/noun/car.png" },
+    { word: "okul", meaning: "school", image: "imgs/noun/school.png" },
+    { word: "kapı", meaning: "door", image: "imgs/noun/door.png" },
+    { word: "pencere", meaning: "window", image: "imgs/noun/window.png" },
+    { word: "kalem", meaning: "pen", image: "imgs/noun/pen.png" },
+    { word: "sandalye", meaning: "chair", image: "imgs/noun/chair.png" },
+    { word: "telefon", meaning: "phone", image: "imgs/noun/phone.png" }
   ],
  numbers: [
   { word: "bir", meaning: "one", image: "imgs/NUMBERS/1.png" },
