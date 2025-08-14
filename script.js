@@ -448,6 +448,8 @@ quizTool.addEventListener('click',(e)=>{
         quizSection.style.display = 'none'
         FlashCardSection.style.display='none'
         footer.style.display='block'
+        customLibrarySection.style.display='none'
+        flashCardSection.style.display='none'
 });
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
