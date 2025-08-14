@@ -7,6 +7,12 @@ import { signInWithEmailAndPassword,
   import {collection,addDoc,getDocs,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // your logic here
+function highlight(el) {
+  el.classList.add('highlight');
+}
+function removeHighlight(el) {
+  el.classList.remove('highlight');
+}
 
 const addLibrary = async (userId,libraryName)=>{
   try{
@@ -40,7 +46,7 @@ async function deleteFromFirestore(userId, libId, collectionName, docId) {
     console.error("Error deleting document:", error);
   }
 }
-
+ 
 async function deleteLibraryWithContents(userId, libId) {
   try {
     const libRef = doc(db, 'users', userId, 'libraries', libId);
@@ -67,6 +73,33 @@ async function deleteLibraryWithContents(userId, libId) {
     console.error('❌ Error deleting library with contents:', error);
   }
 }
+//  const synth = window.speechSynthesis
+
+  function sound(word,meaning){
+  try{
+    console.log('entered sound function');
+    
+  //  let word =  card.dataset.word
+  //  let meaning = card.dataset.meaning
+const utterWord = new SpeechSynthesisUtterance(word)
+utterWord.lang = 'tr-TR'
+utterWord.onstart = () => highlight(word);
+utterWord.onend = () => removeHighlight(word);
+
+speechSynthesis.speak(utterWord)
+const utterMeaning = new SpeechSynthesisUtterance(meaning)
+utterMeaning.lang = 'en-US'
+utterMeaning.onstart=()=>highlight(meaning)
+utterMeaning.onend=()=>highlight(meaning)
+
+
+speechSynthesis.speak(utterMeaning)
+}
+catch(error){
+  console.error('error in synth:',error)
+}
+ }
+
 // -------------------------------flashcards------------------------------------
 const categories = {
   animals: [
@@ -184,7 +217,21 @@ const learningSection = document.getElementById('learning-tools')
 
 
 // ----------------------login.signup part----------------------------
+  const hamburger = document.getElementById('hamburger');
 
+    const navItems = document.querySelector('.nav-items');
+//     // navItems.style.display= 'none'
+
+hamburger.addEventListener('click', () => {
+  navItems.classList.toggle('active');  });
+  document.querySelectorAll('.nav-link').forEach(link=>{
+    console.log(link);
+    
+    link.addEventListener('click',(e)=>{
+      e.preventDefault()
+      navItems.classList.remove('active')
+    })
+  })
 const navBar = document.getElementById('nav-library')
 navBar.style.display='none'
 const footer = document.getElementById('theFooter')
@@ -399,6 +446,8 @@ quizTool.addEventListener('click',(e)=>{
         profileSection.style.display='none'
         librarySection.style.display = 'none'
         quizSection.style.display = 'none'
+        FlashCardSection.style.display='none'
+        footer.style.display='block'
 });
 navFlashCards.addEventListener('click', (e) => {
     e.preventDefault();
@@ -854,7 +903,7 @@ function renderCustomerFlashCard(libraryName){
       <!-- <button class="delete-flashcard" data-id="${card.id}" data-index="${index}">Delete</button>-->
       <div class = icons-action>
         <i class="delete-flashcard  fa-solid fa-trash-can" data-id="${card.id}" data-index="${index}"></i>
-        <i class="speak  fa-solid fa-volume-high"></i>
+        <i class="speak  fa-solid fa-volume-high" data-word="${card.word}" data-meaning = "${card.meaning}"></i>
       </div>
    <!--   <i class="delete-flashcard  fa-solid fa-trash-can" data-id="${card.id}" data-index="${index}"></i> -->
       
@@ -947,7 +996,14 @@ const  renderVocab = async (selectedLibraryName)=>{
     row.innerHTML = `
     <td>${vocab.word}</td>
     <td>${vocab.meaning}</td>
-     <td><i class="delete-vocab delete-btn fa-regular fa-trash-can" data-id="${vocab.id}" data-index="${index}"></i></td>
+      <td>
+    <div class"icon-actions-vocab">
+    <i class="delete-vocab delete-btn fa-regular fa-trash-can" data-id="${vocab.id}" data-index="${index}"></i>
+    <i class="speak  speak-2 fa-solid fa-volume-high" data-word="${vocab.word}" data-meaning = "${vocab.meaning}"></i>
+    </div>
+     </td>
+             
+
 
 
     
@@ -1040,7 +1096,21 @@ document.addEventListener('click', async (e) => {
 
     await loadFlashCard(user.uid, libOj.id); 
   }
+  
+   if(e.target.classList.contains('speak')){
+    console.log('sound clicked');
+    
+    const word= e.target.getAttribute('data-word')
+     const meaning= e.target.getAttribute('data-meaning')
+     console.log(word);
+    console.log(meaning);
+    // let lang = 'tr-TR'
+    // let meaningLang = 'en-US';
+    speechSynthesis.getVoices().forEach(v => console.log(v.name, v.lang));
 
+      sound(word,meaning)
+
+   }
   // Delete Vocab
   if (e.target.classList.contains('delete-vocab')) {
     const docId = e.target.getAttribute('data-id');
@@ -1052,12 +1122,7 @@ document.addEventListener('click', async (e) => {
   }
  
 });
-// vocabBody.addEventListener('click', function (e) {
-//   if (e.target.classList.contains('delete-btn')) {
-//     const row = e.target.closest('tr');
-//     row.remove();
-//   }
-// })
+
 // -------------------------------------QUIZ--------------------------------------------------------------
 // let score = 0;
 const takeQuizBtn = document.getElementById('takeQuiz-btn')
@@ -1160,6 +1225,7 @@ onAuthStateChanged(auth, async(user) => {
     navBar.style.display='block'
     sliderSection.style.display ='block'
     learningSection.style.display ='block'
+    footer.style.display='block'
 
     nameOfUser.textContent = user.displayName || 'anonymus'
     emailOfUser.textContent = user.email;

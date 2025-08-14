@@ -74,6 +74,10 @@ section {
 #vocab-section {
   padding-top: 30px;
 }
+.sound-highlight{
+  border-radius: 5px;
+  background-color: #cf610f;
+}
 /* Navbar */
 nav {
   background-color: #000000;  /* black navbar */
@@ -508,6 +512,15 @@ section {
 /* ---------------vocab------- */
 #vocab-form{
   display: none;
+}
+.icons-action-vocab{
+  display: flex;
+  gap:9px;
+justify-content: center;}
+.speak-2{
+  font-size: 1.4rem;
+  position: relative;
+  top: 0px;
 }
 
 
@@ -1049,6 +1062,154 @@ margin:auto}
   display: flex;
   gap: 20px;
   justify-content: space-around;
+}
+/* ------------------------------------ */
+.hamburger {
+  display: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #e67e22;
+}
+
+/* Media query for mobile screens */
+@media (max-width: 768px) {
+  /* nav.nav-items{display: none;} */
+  #home-section {
+  /* background-color: #000; */
+  padding: 15px 20px;
+  color: white;
+  overflow: hidden;
+  position: relative;
+  /* s */
+  height: 87vh;
+  margin-bottom: 0px;
+   
+}
+
+  nav .nav-items{
+    display: none; /* hide nav links initially */
+    flex-direction: column;
+    background-color: #000;
+     position: absolute;
+    top: 60px;
+     left: 0;
+    width: 100vw;
+    border-radius: 5px;
+    padding: 10px 0;
+    z-index: 1000;
+    height: 100vh;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+
+  }
+   
+
+  nav ul.nav-items li {
+    text-align: right;
+    margin: 10px 0;
+  }
+nav ul li.dropdown {
+  position: relative;
+}
+nav ul li .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%; /* right below parent li */
+  background-color: #000000; /* black background */
+  padding: 0.5rem 0;
+  border-radius: 0 0 5px 5px;
+  min-width: 150px;
+  z-index: 1000;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  margin: auto;
+}
+nav ul li.dropdown:hover .dropdown-menu {
+  display: block;
+
+  /* nav ul.nav-items li .dropdown-menu {
+    /* position: static;  */
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+  } */
+
+  nav ul.nav-items li .dropdown-menu li a {
+    padding: 10px 20px;
+  }
+
+  .hamburger {
+    display: block; /* show hamburger on mobile */
+  }
+
+  /* Make nav-container relative for absolute menu */
+  .nav-container {
+    position: relative;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+
+/* When active, show nav */
+nav .nav-items.active {
+  display: flex;
+  right: 5px;
+ }
+.learning-tools {
+  display: flex;
+  gap: 25px;
+  padding: 5px 20px;
+  justify-content: center;
+  background-color: #fdfdfd;
+  height: auto;
+}
+.tool-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 16px;
+}
+
+.tool-card {
+  width: 300px;
+  height: auto;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  color: #222;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Top Right Age Label */
+.tool-age {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #333;
+  background: rgba(255,255,255,0.6);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+
+
+ .tool-video {
+  width: 70%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 }
 /* @media (max-width: 600px) {
   nav {
