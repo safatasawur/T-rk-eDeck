@@ -852,7 +852,11 @@ function renderCustomerFlashCard(libraryName){
       <p>${card.meaning}</p>
       ${card.imageURL ? `<img src="${card.imageURL}" alt="Flashcard image">` : ""}
       <!-- <button class="delete-flashcard" data-id="${card.id}" data-index="${index}">Delete</button>-->
-      <i class="delete-flashcard  fa-solid fa-trash-can" data-id="${card.id}" data-index="${index}"></i>
+      <div class = icons-action>
+        <i class="delete-flashcard  fa-solid fa-trash-can" data-id="${card.id}" data-index="${index}"></i>
+        <i class="speak  fa-solid fa-volume-high"></i>
+      </div>
+   <!--   <i class="delete-flashcard  fa-solid fa-trash-can" data-id="${card.id}" data-index="${index}"></i> -->
       
     
     `;

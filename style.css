@@ -399,7 +399,27 @@ section {
   margin-top: 10px;
   border-radius: 8px;
 }
- 
+.icons-action{
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.delete-flashcard{
+  /* font-size: 0.7rem; */
+  padding: 5px;
+  margin-top: 5px;
+    color: #e67e22;
+      font-size: 1.4rem;
+}
+.speak{
+  color: #e67e22;
+  font-size: 1.4rem;
+  display: block;
+  /* margin: auto; */
+  position: relative;
+  top: 10px;
+  
+}
 /* ===== Vocab List ===== */
 
 
@@ -1005,18 +1025,11 @@ margin:auto}
 }
 .quiz-score{
   margin-top: 10px
-}.delete-flashcard{
-  font-size: 0.7rem;
-  padding: 5px;
-  margin-top: 5px;
 }
 .quiz-score-end{
   display: none;
 }
-.delete-flashcard{
-  font-size: 2rem;
-  color: #e67e22;
-}
+
 .delete-vocab {
   font-size: 1.5rem;
   color: #e67e22;
